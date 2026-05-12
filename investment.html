@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Investment Assistant — EveryRupee</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="investment.css" />
+
+<nav class="navbar">
+  <a href="#" class="navbar__logo">
+    <span class="navbar__logo-icon">₹</span> EveryRupee
+  </a>
+  <ul class="navbar__nav">
+    <li><a href="index.html">home</a></li>
+    <li><a href="planner.html">Planner</a></li>
+    <li><a href="edcuation.html" >Knowledge hub</a></li>
+    <li><a href="taxassist.html" >Tax advisor</a></li>
+    <li><a href="investment.html" class="active">Investments</a></li>
+    <li><a href="financial-advisor-match.html" class="er-nav__cta">finhelp</a></li>
+
+  </ul>
+  <div class="navbar__actions">
+    <button class="btn btn-ghost btn-sm" onclick="loadDemoPortfolio()">⚡ Demo Mode</button>
+    <!-- <button class="btn btn-gold btn-sm">Sign In</button> -->
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero__inner">
+    <div>
+      <span class="hero__eyebrow">
+        <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="currentColor"/></svg>
+        AI-Powered · Portfolio Tracker
+      </span>
+      <h1 class="hero__title">Your Personal<br/><span>Investment Assistant</span></h1>
+      <p class="hero__sub">Track your portfolio in real time. Get live prices, risk analysis, and smart insights — all in one place. Built for long-term wealth creation.</p>
+      <div class="hero__actions">
+        <button class="btn btn-gold btn-lg" onclick="document.getElementById('input-form').scrollIntoView({behavior:'smooth'})">📈 Start Tracking</button>
+        <button class="btn btn-ghost" onclick="loadDemoPortfolio()">Load Demo Portfolio</button>
+      </div>
+    </div>
+    <div class="hero__stat-cluster animate-fadeup stagger">
+      <div class="hero-stat"><div class="hero-stat__val">120+</div><div class="hero-stat__label">Stocks Available</div></div>
+      <div class="hero-stat"><div class="hero-stat__val">Live</div><div class="hero-stat__label">Price Feed</div></div>
+      <div class="hero-stat"><div class="hero-stat__val">AI</div><div class="hero-stat__label">Risk Analysis</div></div>
+      <div class="hero-stat"><div class="hero-stat__val">Free</div><div class="hero-stat__label">No Sign-up Needed</div></div>
+    </div>
+  </div>
+</section>
+
+<main>
+  <div class="section">
+
+    <div class="card animate-fadeup" style="margin-bottom: var(--space-md);" id="import-section">
+      <div class="card__header">
+        <div>
+          <div class="card__title">Import Portfolio</div>
+          <div class="card__subtitle">Upload your Zerodha Holdings Excel file (.xlsx, .xls)</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <div style="display: flex; gap: var(--space-sm); align-items: center; flex-wrap: wrap;">
+            <input class="form-input" id="excel-upload" type="file" accept=".xlsx, .xls" style="flex: 1; min-width: 250px;" />
+            <button class="btn btn-gold" onclick="triggerExcelImport()">📂 Import from Zerodha</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="input-form" class="card card--gold-border animate-fadeup" style="margin-bottom: var(--space-lg);">
+      <div class="card__header">
+        <div>
+          <div class="card__title">Add Your Investment</div>
+          <div class="card__subtitle">Enter stock details to build your portfolio</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="resetForm()">✕ Clear Form</button>
+      </div>
+
+      <div class="form-grid mb-md" id="user-details-section">
+        <div class="form-group">
+          <label class="form-label" for="user-name">Your Name</label>
+          <input class="form-input" id="user-name" type="text" placeholder="e.g. Arjun Sharma" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="user-email">Email Address</label>
+          <input class="form-input" id="user-email" type="email" placeholder="you@example.com" />
+        </div>
+      </div>
+
+      <hr class="divider" style="margin: var(--space-md) 0;" />
+
+      <div class="form-grid mb-md">
+
+        <div class="form-group stock-search-wrapper" id="stock-search-group">
+          <label class="form-label">Select Stock</label>
+
+          <div class="stock-search-container" id="stock-search-container">
+            <input
+              class="form-input"
+              id="stock-search"
+              type="text"
+              placeholder="Search by name or symbol…"
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Search for a stock"
+              aria-autocomplete="list"
+              aria-expanded="false"
+              role="combobox"
+            />
+            <div class="search-field-spinner hidden" id="search-field-spinner"></div>
+            <div class="stock-suggestions hidden" id="stock-suggestions" role="listbox"></div>
+          </div>
+
+          <div id="selected-pill-wrap"></div>
+
+          <input type="hidden" id="selected-stock-key" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="stock-qty">Quantity (Shares)</label>
+          <input class="form-input" id="stock-qty" type="number" min="1" placeholder="e.g. 10" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="buy-price">Buy Price (₹)</label>
+          <input class="form-input" id="buy-price" type="number" min="1" step="0.01" placeholder="e.g. 2850.00" />
+        </div>
+      </div>
+
+      <div style="display:flex; gap: var(--space-sm); flex-wrap: wrap;">
+        <button class="btn btn-primary" onclick="addStock()">➕ Add to Portfolio</button>
+        <button class="btn btn-outline" onclick="refreshPrices()">🔄 Refresh Prices</button>
+        <button class="btn btn-outline" onclick="loadDemoPortfolio()">⚡ Load Demo Data</button>
+      </div>
+    </div>
+
+    <div class="card animate-fadeup" style="margin-bottom: var(--space-lg);">
+      <div class="card__header">
+        <div>
+          <div class="card__title">Portfolio Holdings</div>
+          <div class="card__subtitle" id="portfolio-count-label">No stocks added yet</div>
+        </div>
+        <div style="display:flex; gap: 0.5rem; align-items: center;">
+          <span class="badge badge-gold" id="portfolio-badge" style="display:none;">0 Stocks</span>
+          <button class="btn btn-outline btn-sm" onclick="clearPortfolio()">🗑 Clear All</button>
+        </div>
+      </div>
+      <div class="empty-state" id="empty-portfolio">
+        <div class="empty-state__icon">📊</div>
+        <div class="empty-state__text">Your portfolio is empty.<br/>Add stocks using the form above or try the demo.</div>
+      </div>
+      <div class="table-wrapper hidden" id="portfolio-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Stock</th><th>Qty</th><th>Buy Price</th><th>Current Price</th>
+              <th>Invested</th><th>Current Value</th><th>P/L</th><th>Risk</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="portfolio-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="dashboard" class="hidden">
+      <div id="report-cta-bar"></div>
+      <div class="section-heading">
+        <div class="section-heading__label">Portfolio Analytics</div>
+        <h2 class="section-heading__title">Dashboard Overview</h2>
+        <p class="section-heading__sub">Real-time analysis of your investment portfolio</p>
+      </div>
+
+      <div class="stat-grid stagger" id="stat-cards">
+        <div class="stat-card animate-fadeup">
+          <div class="stat-card__accent" style="background: linear-gradient(90deg, var(--green-600), var(--green-400));"></div>
+          <div class="stat-card__icon" style="background: var(--green-50); color: var(--green-600);">₹</div>
+          <div class="stat-card__label">Total Invested</div>
+          <div class="stat-card__value" id="stat-invested">₹0</div>
+          <div class="stat-card__change text-muted" id="stat-invested-label">—</div>
+        </div>
+        <div class="stat-card animate-fadeup">
+          <div class="stat-card__accent" style="background: linear-gradient(90deg, var(--gold-500), var(--gold-300));"></div>
+          <div class="stat-card__icon" style="background: var(--gold-100); color: var(--gold-600);">📈</div>
+          <div class="stat-card__label">Current Value</div>
+          <div class="stat-card__value" id="stat-value">₹0</div>
+          <div class="stat-card__change text-muted" id="stat-value-label">—</div>
+        </div>
+        <div class="stat-card animate-fadeup">
+          <div class="stat-card__accent" style="background: linear-gradient(90deg, var(--red-500), #e57373);"></div>
+          <div class="stat-card__icon" style="background: var(--green-50); color: var(--green-600);">💰</div>
+          <div class="stat-card__label">Profit / Loss</div>
+          <div class="stat-card__value" id="stat-pl">₹0</div>
+          <div class="stat-card__change" id="stat-pl-pct">0%</div>
+        </div>
+        <div class="stat-card animate-fadeup">
+          <div class="stat-card__accent" style="background: linear-gradient(90deg, var(--green-500), var(--gold-500));"></div>
+          <div class="stat-card__icon" style="background: var(--cream-200); color: var(--green-700);">🛡</div>
+          <div class="stat-card__label">Portfolio Health</div>
+          <div class="stat-card__value" id="stat-health">—</div>
+          <div class="stat-card__change text-muted" id="stat-health-label">—</div>
+        </div>
+      </div>
+
+      <div class="two-col mt-lg">
+        <div class="card">
+          <div class="card__header"><div class="card__title">🏆 Top & Bottom Performers</div></div>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div>
+              <div class="form-label mb-sm" style="margin-bottom: 0.5rem;">Best Performing</div>
+              <div id="best-performer" style="padding: 0.85rem; background: var(--green-50); border-radius: var(--radius-sm); border-left: 3px solid var(--green-500);"><span class="text-muted">—</span></div>
+            </div>
+            <div>
+              <div class="form-label mb-sm" style="margin-bottom: 0.5rem;">Worst Performing</div>
+              <div id="worst-performer" style="padding: 0.85rem; background: var(--red-100); border-radius: var(--radius-sm); border-left: 3px solid var(--red-500);"><span class="text-muted">—</span></div>
+            </div>
+            <div>
+              <div class="form-label mb-sm" style="margin-bottom: 0.5rem;">Portfolio Health Score</div>
+              <div class="health-ring" id="health-ring-wrap">
+                <div class="ring-wrap">
+                  <svg width="90" height="90" viewBox="0 0 90 90">
+                    <circle cx="45" cy="45" r="38" fill="none" stroke="var(--cream-300)" stroke-width="8"/>
+                    <circle id="health-ring-circle" cx="45" cy="45" r="38" fill="none" stroke="var(--green-500)" stroke-width="8" stroke-linecap="round" stroke-dasharray="238.76" stroke-dashoffset="238.76" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1);" />
+                  </svg>
+                  <div class="ring-text" id="health-ring-text">0</div>
+                </div>
+                <div>
+                  <div class="health-label" id="health-label">Calculating…</div>
+                  <div class="health-desc" id="health-desc">Add stocks to see your health score</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card__header">
+            <div class="card__title">🥧 Portfolio Distribution</div>
+            <span class="badge badge-cream" id="chart-legend-label">By Investment Value</span>
+          </div>
+          <div class="chart-wrap"><canvas id="pie-chart" height="220"></canvas></div>
+        </div>
+      </div>
+
+      <div class="two-col mt-lg">
+        <div class="card">
+          <div class="card__header">
+            <div class="card__title">💡 Portfolio Insights</div>
+            <span class="badge badge-gold" id="insights-count">0</span>
+          </div>
+          <div class="insight-list" id="insights-list">
+            <div class="empty-state" style="padding: var(--space-md);"><div class="empty-state__text">Insights will appear here once you add stocks.</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card__header"><div class="card__title">📋 Recommendations</div></div>
+          <div class="insight-list" id="recommendations-list">
+            <div class="empty-state" style="padding: var(--space-md);"><div class="empty-state__text">Recommendations will appear here based on your portfolio.</div></div>
+          </div>
+        </div>
+      </div>
+    </div></div></main>
+
+<div class="toast-container" id="toast-container"></div> 
+
+<div id="ai-chat-widget" class="ai-widget">
+  <button id="ai-chat-toggle" class="ai-widget__toggle" onclick="toggleAIChat()">
+    ✨
+  </button>
+  
+  <div id="ai-chat-window" class="ai-window hidden">
+    <div class="ai-window__header">
+      <div>
+        <strong style="display:block; margin-bottom: 2px;">Investment Copilot</strong>
+        <span style="font-size: 0.75rem; color: var(--gold-300);">Powered by AI</span>
+      </div>
+      <button onclick="toggleAIChat()" class="ai-window__close" title="Close">✕</button>
+    </div>
+    
+    <div id="ai-chat-messages" class="ai-window__messages">
+      <div class="ai-message ai-message--system">
+        👋 Hi! I'm your personal wealth advisor. Ask me anything about your portfolio's performance, risk, or future strategy.
+      </div>
+      <div class="ai-quick-actions" id="ai-quick-actions">
+        <button class="badge badge-gold" style="border: 1px solid var(--gold-500); cursor:pointer;" onclick="sendQuickMessage('Analyze my portfolio')">Analyze Portfolio</button>
+        <button class="badge badge-cream" style="border: 1px solid var(--cream-300); cursor:pointer;" onclick="sendQuickMessage('Am I diversified?')">Am I diversified?</button>
+        <button class="badge badge-cream" style="border: 1px solid var(--cream-300); cursor:pointer;" onclick="sendQuickMessage('Which stock is risky?')">Find Risky Stocks</button>
+      </div>
+    </div>
+    
+    <div class="ai-window__input">
+      <input type="text" id="ai-chat-input" placeholder="Ask about your portfolio..." onkeypress="handleAIChatEnter(event)" autocomplete="off" />
+      <button onclick="sendAIChatMessage()" class="btn btn-gold btn-sm" style="padding: 0 1rem;">Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* =========================================================
+   1. STOCK DATABASE — 120+ Indian stocks
+========================================================= */
+const STOCK_LIST = [
+  { symbol: 'HDFCBANK',    name: 'HDFC Bank',                      sector: 'Banking' },
+  { symbol: 'ICICIBANK',   name: 'ICICI Bank',                     sector: 'Banking' },
+  { symbol: 'SBIN',        name: 'State Bank of India',            sector: 'Banking' },
+  { symbol: 'KOTAKBANK',   name: 'Kotak Mahindra Bank',            sector: 'Banking' },
+  { symbol: 'AXISBANK',    name: 'Axis Bank',                      sector: 'Banking' },
+  { symbol: 'INDUSINDBK',  name: 'IndusInd Bank',                  sector: 'Banking' },
+  { symbol: 'BANDHANBNK',  name: 'Bandhan Bank',                   sector: 'Banking' },
+  { symbol: 'FEDERALBNK',  name: 'Federal Bank',                   sector: 'Banking' },
+  { symbol: 'IDFCFIRSTB',  name: 'IDFC First Bank',                sector: 'Banking' },
+  { symbol: 'PNB',         name: 'Punjab National Bank',           sector: 'Banking' },
+  { symbol: 'CANBK',       name: 'Canara Bank',                    sector: 'Banking' },
+  { symbol: 'BANKBARODA',  name: 'Bank of Baroda',                 sector: 'Banking' },
+  { symbol: 'RBLBANK',     name: 'RBL Bank',                       sector: 'Banking' },
+  { symbol: 'TCS',         name: 'Tata Consultancy Services',      sector: 'Technology' },
+  { symbol: 'INFY',        name: 'Infosys',                        sector: 'Technology' },
+  { symbol: 'WIPRO',       name: 'Wipro',                          sector: 'Technology' },
+  { symbol: 'HCLTECH',     name: 'HCL Technologies',               sector: 'Technology' },
+  { symbol: 'TECHM',       name: 'Tech Mahindra',                  sector: 'Technology' },
+  { symbol: 'LTIM',        name: 'LTIMindtree',                    sector: 'Technology' },
+  { symbol: 'MPHASIS',     name: 'Mphasis',                        sector: 'Technology' },
+  { symbol: 'PERSISTENT',  name: 'Persistent Systems',             sector: 'Technology' },
+  { symbol: 'COFORGE',     name: 'Coforge',                        sector: 'Technology' },
+  { symbol: 'LTTS',        name: 'L&T Technology Services',        sector: 'Technology' },
+  { symbol: 'KPITTECH',    name: 'KPIT Technologies',              sector: 'Technology' },
+  { symbol: 'RELIANCE',    name: 'Reliance Industries',            sector: 'Energy' },
+  { symbol: 'ONGC',        name: 'Oil and Natural Gas Corp',       sector: 'Energy' },
+  { symbol: 'BPCL',        name: 'Bharat Petroleum',               sector: 'Energy' },
+  { symbol: 'IOC',         name: 'Indian Oil Corporation',         sector: 'Energy' },
+  { symbol: 'HINDPETRO',   name: 'Hindustan Petroleum',            sector: 'Energy' },
+  { symbol: 'GAIL',        name: 'GAIL (India)',                   sector: 'Energy' },
+  { symbol: 'COALINDIA',   name: 'Coal India',                     sector: 'Energy' },
+  { symbol: 'POWERGRID',   name: 'Power Grid Corporation',         sector: 'Energy' },
+  { symbol: 'NTPC',        name: 'NTPC',                           sector: 'Energy' },
+  { symbol: 'ADANIGREEN',  name: 'Adani Green Energy',             sector: 'Energy' },
+  { symbol: 'TATAPOWER',   name: 'Tata Power',                     sector: 'Energy' },
+  { symbol: 'HINDUNILVR',  name: 'Hindustan Unilever',             sector: 'FMCG' },
+  { symbol: 'ITC',         name: 'ITC',                            sector: 'FMCG' },
+  { symbol: 'NESTLEIND',   name: 'Nestle India',                   sector: 'FMCG' },
+  { symbol: 'BRITANNIA',   name: 'Britannia Industries',           sector: 'FMCG' },
+  { symbol: 'DABUR',       name: 'Dabur India',                    sector: 'FMCG' },
+  { symbol: 'MARICO',      name: 'Marico',                         sector: 'FMCG' },
+  { symbol: 'COLPAL',      name: 'Colgate-Palmolive India',        sector: 'FMCG' },
+  { symbol: 'EMAMILTD',    name: 'Emami',                          sector: 'FMCG' },
+  { symbol: 'GODREJCP',    name: 'Godrej Consumer Products',       sector: 'FMCG' },
+  { symbol: 'TATACONSUM',  name: 'Tata Consumer Products',         sector: 'FMCG' },
+  { symbol: 'BAJFINANCE',  name: 'Bajaj Finance',                  sector: 'Finance' },
+  { symbol: 'BAJAJFINSV',  name: 'Bajaj Finserv',                  sector: 'Finance' },
+  { symbol: 'HDFCLIFE',    name: 'HDFC Life Insurance',            sector: 'Finance' },
+  { symbol: 'SBILIFE',     name: 'SBI Life Insurance',             sector: 'Finance' },
+  { symbol: 'ICICIGI',     name: 'ICICI Lombard General Insurance',sector: 'Finance' },
+  { symbol: 'MUTHOOTFIN',  name: 'Muthoot Finance',                sector: 'Finance' },
+  { symbol: 'CHOLAFIN',    name: 'Cholamandalam Investment',       sector: 'Finance' },
+  { symbol: 'M&MFIN',      name: 'Mahindra Finance',               sector: 'Finance' },
+  { symbol: 'LICIHSGFIN',  name: 'LIC Housing Finance',            sector: 'Finance' },
+  { symbol: 'PNBHOUSING',  name: 'PNB Housing Finance',            sector: 'Finance' },
+  { symbol: 'MARUTI',      name: 'Maruti Suzuki India',            sector: 'Automobiles' },
+  { symbol: 'TATAMOTORS',  name: 'Tata Motors',                    sector: 'Automobiles' },
+  { symbol: 'M&M',         name: 'Mahindra & Mahindra',            sector: 'Automobiles' },
+  { symbol: 'BAJAJ-AUTO',  name: 'Bajaj Auto',                     sector: 'Automobiles' },
+  { symbol: 'HEROMOTOCO',  name: 'Hero MotoCorp',                  sector: 'Automobiles' },
+  { symbol: 'EICHERMOT',   name: 'Eicher Motors',                  sector: 'Automobiles' },
+  { symbol: 'ASHOKLEY',    name: 'Ashok Leyland',                  sector: 'Automobiles' },
+  { symbol: 'TVSMOTOR',    name: 'TVS Motor Company',              sector: 'Automobiles' },
+  { symbol: 'BOSCHLTD',    name: 'Bosch',                          sector: 'Automobiles' },
+  { symbol: 'MOTHERSON',   name: 'Samvardhana Motherson',          sector: 'Automobiles' },
+  { symbol: 'SUNPHARMA',   name: 'Sun Pharmaceutical',             sector: 'Pharma' },
+  { symbol: 'DRREDDY',     name: "Dr. Reddy's Laboratories",       sector: 'Pharma' },
+  { symbol: 'CIPLA',       name: 'Cipla',                          sector: 'Pharma' },
+  { symbol: 'DIVISLAB',    name: "Divi's Laboratories",            sector: 'Pharma' },
+  { symbol: 'AUROPHARMA',  name: 'Aurobindo Pharma',               sector: 'Pharma' },
+  { symbol: 'LUPIN',       name: 'Lupin',                          sector: 'Pharma' },
+  { symbol: 'TORNTPHARM',  name: 'Torrent Pharmaceuticals',        sector: 'Pharma' },
+  { symbol: 'BIOCON',      name: 'Biocon',                         sector: 'Pharma' },
+  { symbol: 'ALKEM',       name: 'Alkem Laboratories',             sector: 'Pharma' },
+  { symbol: 'APOLLOHOSP',  name: 'Apollo Hospitals',               sector: 'Healthcare' },
+  { symbol: 'FORTIS',      name: 'Fortis Healthcare',              sector: 'Healthcare' },
+  { symbol: 'MAXHEALTH',   name: 'Max Healthcare Institute',       sector: 'Healthcare' },
+  { symbol: 'LT',          name: 'Larsen & Toubro',                sector: 'Infrastructure' },
+  { symbol: 'ADANIPORTS',  name: 'Adani Ports & SEZ',              sector: 'Infrastructure' },
+  { symbol: 'ADANIENT',    name: 'Adani Enterprises',              sector: 'Infrastructure' },
+  { symbol: 'DLF',         name: 'DLF',                            sector: 'Real Estate' },
+  { symbol: 'GODREJPROP',  name: 'Godrej Properties',              sector: 'Real Estate' },
+  { symbol: 'OBEROIRLTY',  name: 'Oberoi Realty',                  sector: 'Real Estate' },
+  { symbol: 'PRESTIGE',    name: 'Prestige Estates Projects',      sector: 'Real Estate' },
+  { symbol: 'SIEMENS',     name: 'Siemens India',                  sector: 'Industrials' },
+  { symbol: 'ABB',         name: 'ABB India',                      sector: 'Industrials' },
+  { symbol: 'HAVELLS',     name: 'Havells India',                  sector: 'Industrials' },
+  { symbol: 'BHEL',        name: 'Bharat Heavy Electricals',       sector: 'Industrials' },
+  { symbol: 'BEL',         name: 'Bharat Electronics',             sector: 'Industrials' },
+  { symbol: 'HAL',         name: 'Hindustan Aeronautics',          sector: 'Industrials' },
+  { symbol: 'BHARTIARTL',  name: 'Bharti Airtel',                  sector: 'Telecom' },
+  { symbol: 'IDEA',        name: 'Vodafone Idea',                  sector: 'Telecom' },
+  { symbol: 'TATACOMM',    name: 'Tata Communications',            sector: 'Telecom' },
+  { symbol: 'TATASTEEL',   name: 'Tata Steel',                     sector: 'Metals' },
+  { symbol: 'JSWSTEEL',    name: 'JSW Steel',                      sector: 'Metals' },
+  { symbol: 'HINDALCO',    name: 'Hindalco Industries',            sector: 'Metals' },
+  { symbol: 'VEDL',        name: 'Vedanta',                        sector: 'Metals' },
+  { symbol: 'SAIL',        name: 'Steel Authority of India',       sector: 'Metals' },
+  { symbol: 'NATIONALUM',  name: 'National Aluminium Company',     sector: 'Metals' },
+  { symbol: 'TITAN',       name: 'Titan Company',                  sector: 'Consumer' },
+  { symbol: 'TRENT',       name: 'Trent',                          sector: 'Consumer' },
+  { symbol: 'DMART',       name: 'Avenue Supermarts (DMart)',      sector: 'Consumer' },
+  { symbol: 'NYKAA',       name: 'FSN E-Commerce (Nykaa)',         sector: 'Consumer' },
+  { symbol: 'ZOMATO',      name: 'Zomato',                         sector: 'Consumer' },
+  { symbol: 'PAYTM',       name: 'One 97 Communications (Paytm)',  sector: 'Fintech' },
+  { symbol: 'POLICYBZR',   name: 'PB Fintech (PolicyBazaar)',      sector: 'Fintech' },
+  { symbol: 'INDIGO',      name: 'InterGlobe Aviation (IndiGo)',   sector: 'Aviation' },
+  { symbol: 'IRCTC',       name: 'IRCTC',                          sector: 'Travel' },
+  { symbol: 'JUBLFOOD',    name: "Jubilant FoodWorks (Domino's)",  sector: 'Consumer' },
+  { symbol: 'DEVYANI',     name: 'Devyani International (KFC/PH)', sector: 'Consumer' },
+  { symbol: 'PIDILITIND',  name: 'Pidilite Industries',            sector: 'Chemicals' },
+  { symbol: 'SRF',         name: 'SRF',                            sector: 'Chemicals' },
+  { symbol: 'DEEPAKNTR',   name: 'Deepak Nitrite',                 sector: 'Chemicals' },
+  { symbol: 'AARTIIND',    name: 'Aarti Industries',               sector: 'Chemicals' },
+  { symbol: 'NAVINFLUOR',  name: 'Navin Fluorine International',   sector: 'Chemicals' },
+  { symbol: 'ULTRACEMCO',  name: 'UltraTech Cement',               sector: 'Cement' },
+  { symbol: 'AMBUJACEM',   name: 'Ambuja Cements',                 sector: 'Cement' },
+  { symbol: 'ACC',         name: 'ACC',                            sector: 'Cement' },
+  { symbol: 'SHREECEM',    name: 'Shree Cement',                   sector: 'Cement' },
+  { symbol: 'JKCEMENT',    name: 'JK Cement',                      sector: 'Cement' },
+];
+
+/* =========================================================
+   2. SECTOR → FALLBACK PRICE MAP
+========================================================= */
+const SECTOR_BASE_PRICES = {
+  Banking: 600, Technology: 3000, Energy: 800, FMCG: 1200,
+  Finance: 1800, Automobiles: 2000, Pharma: 900, Healthcare: 700,
+  Infrastructure: 1200, 'Real Estate': 400, Industrials: 3000,
+  Telecom: 700, Metals: 500, Consumer: 1500, Fintech: 800,
+  Aviation: 3000, Travel: 600, Chemicals: 1200, Cement: 3000,
+};
+
+const STOCK_META = {};
+STOCK_LIST.forEach(s => {
+  STOCK_META[s.symbol] = {
+    name: s.name,
+    sector: s.sector,
+    beta: parseFloat((0.7 + Math.random() * 0.7).toFixed(2)), 
+  };
+});
+
+/* =========================================================
+   3. CACHE — localStorage
+========================================================= */
+const CACHE_KEY_PREFIX  = 'er_price_';
+const CACHE_TTL_MS      = 15 * 60 * 1000; 
+const RECENT_STOCKS_KEY = 'er_recent_stocks';
+const MAX_RECENT        = 6;
+
+function cacheSet(symbol, price, isLive) {
+  try {
+    localStorage.setItem(CACHE_KEY_PREFIX + symbol, JSON.stringify({
+      price,
+      isLive,
+      ts: Date.now(),
+    }));
+  } catch (_) { }
+}
+
+function cacheGet(symbol) {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY_PREFIX + symbol);
+    if (!raw) return null;
+    const { price, isLive, ts } = JSON.parse(raw);
+    if (Date.now() - ts > CACHE_TTL_MS) { 
+      localStorage.removeItem(CACHE_KEY_PREFIX + symbol); 
+      return null; 
+    }
+    return { price, isLive: !!isLive };
+  } catch (_) { return null; }
+}
+
+function getRecentStocks() {
+  try { return JSON.parse(localStorage.getItem(RECENT_STOCKS_KEY) || '[]'); } catch (_) { return []; }
+}
+function addRecentStock(symbol) {
+  let recent = getRecentStocks().filter(s => s !== symbol);
+  recent.unshift(symbol);
+  recent = recent.slice(0, MAX_RECENT);
+  try { localStorage.setItem(RECENT_STOCKS_KEY, JSON.stringify(recent)); } catch (_) {}
+}
+function clearRecentStocks() {
+  try { localStorage.removeItem(RECENT_STOCKS_KEY); } catch (_) {}
+} 
+
+/* =========================================================
+   4. YAHOO FINANCE API
+========================================================= */
+async function fetchYahooPrice(symbol) {
+  const cached = cacheGet(symbol);
+  if (cached !== null) {
+    console.log(`[Cache HIT] ${symbol} = ₹${cached.price}`);
+    return cached;
+  }
+
+  try {
+    console.log(`[API] Fetching ${symbol} from backend...`);
+    const res = await fetch(`http://localhost:5001/price/${symbol}`);
+    const data = await res.json();
+
+    if (data.price && !isNaN(data.price)) {
+      console.log(`[Success] ${symbol} = ₹${data.price}`);
+      cacheSet(symbol, data.price, true);
+      return { price: data.price, isLive: true };
+    }
+    throw new Error("Invalid API response");
+  } catch (err) {
+    console.error(`[ERROR] Backend failed for ${symbol}:`, err);
+    const mockPrice = getMockPrice(symbol);
+    cacheSet(symbol, mockPrice, false);
+    return { price: mockPrice, isLive: false };
+  }
+}
+
+function getMockPrice(symbol) {
+  const meta   = STOCK_META[symbol];
+  const sector = meta?.sector || 'Technology';
+  const base   = SECTOR_BASE_PRICES[sector] || 1000;
+
+  let hash = 0;
+  for (let i = 0; i < symbol.length; i++) hash = (hash * 31 + symbol.charCodeAt(i)) & 0xffffffff;
+  const variance = (((hash >>> 0) % 400) - 200) / 1000;
+  return parseFloat((base * (1 + variance)).toFixed(2));
+}
+
+/* =========================================================
+   5. APPLICATION STATE
+========================================================= */
+let portfolio    = [];    
+let pieChart     = null;  
+let selectedStockSymbol = null;
+
+/* =========================================================
+   6. UTILITY HELPERS
+========================================================= */
+function fmt(n) { return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function fmtPct(n) { return (n >= 0 ? '+' : '') + Number(n).toFixed(2) + '%'; }
+function showToast(msg, type = '') {
+  const container = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast${type ? ' toast--' + type : ''}`;
+  el.textContent = msg;
+  container.appendChild(el);
+  setTimeout(() => el.remove(), 3300);
+}
+function debounce(fn, ms) {
+  let timer;
+  return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), ms); };
+}
+
+/* =========================================================
+   7. ZERODHA-STYLE STOCK SEARCH ENGINE
+========================================================= */
+const searchInput      = document.getElementById('stock-search');
+const suggestionsPanel = document.getElementById('stock-suggestions');
+const spinnerEl        = document.getElementById('search-field-spinner');
+const pillWrap         = document.getElementById('selected-pill-wrap');
+const hiddenStockKey   = document.getElementById('selected-stock-key');
+
+let activeIndex = -1;
+let currentResults = [];
+
+function showSearchSpinner(show) { spinnerEl.classList.toggle('hidden', !show); }
+function closeSuggestions() {
+  suggestionsPanel.classList.add('hidden');
+  suggestionsPanel.innerHTML = '';
+  activeIndex = -1;
+  currentResults = [];
+  searchInput.setAttribute('aria-expanded', 'false');
+}
+
+function highlightMatch(text, query) {
+  if (!query) return text;
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return text;
+  return ( text.slice(0, idx) + `<mark class="highlight">${text.slice(idx, idx + query.length)}</mark>` + text.slice(idx + query.length) );
+}
+
+function getInitials(symbol) { return symbol.slice(0, 3); }
+function getAvatarColor(symbol) {
+  const colors = ['#1f3b1f','#2d5016','#3a6b1e','#4a8026','#1a2e1a','#8b6914','#a67c1f','#c49a2a','#2d4d1e','#1e3a2d'];
+  let hash = 0;
+  for (let c of symbol) hash = (hash * 31 + c.charCodeAt(0)) & 0xff;
+  return colors[hash % colors.length];
+}
+
+function filterStocks(query) {
+  if (!query || query.length < 1) return [];
+  const q = query.toLowerCase().trim();
+  const results = [];
+  for (const stock of STOCK_LIST) {
+    if ( stock.symbol.toLowerCase().includes(q) || stock.name.toLowerCase().includes(q) || stock.sector.toLowerCase().includes(q) ) {
+      results.push(stock);
+      if (results.length === 8) break; 
+    }
+  }
+  return results;
+}
+
+function renderSuggestions(results, query) {
+  suggestionsPanel.innerHTML = '';
+  currentResults = results;
+  activeIndex = -1;
+
+  if (results.length === 0) {
+    suggestionsPanel.innerHTML = `<div class="suggestions-empty"><span class="suggestions-empty__icon">🔍</span>No stocks found for "<strong>${query}</strong>".<br/>Try a different symbol or company name.</div>`;
+    suggestionsPanel.classList.remove('hidden');
+    searchInput.setAttribute('aria-expanded', 'true');
+    return;
+  }
+
+  const header = document.createElement('div');
+  header.className = 'suggestions-header';
+  header.innerHTML = `<span>Results (${results.length})</span>`;
+  suggestionsPanel.appendChild(header);
+
+  results.forEach((stock, i) => {
+    const isInPortfolio = portfolio.some(p => p.key === stock.symbol);
+    const item = document.createElement('div');
+    item.className = 'suggestion-item';
+    item.setAttribute('role', 'option');
+    item.setAttribute('data-index', i);
+    const avatarBg = getAvatarColor(stock.symbol);
+    item.innerHTML = `
+      <div class="suggestion-avatar" style="background:${avatarBg};">${getInitials(stock.symbol)}</div>
+      <div class="suggestion-info">
+        <div class="suggestion-name">${highlightMatch(stock.name, query)}</div>
+        <div class="suggestion-meta">${highlightMatch(stock.symbol, query)} · ${stock.sector}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <span class="suggestion-sector">${stock.sector}</span>
+        ${isInPortfolio ? '<span style="font-size:0.65rem;color:var(--green-500);font-weight:600;">✓ Added</span>' : ''}
+      </div>
+    `;
+    item.addEventListener('mousedown', (e) => { e.preventDefault(); selectStock(stock.symbol); });
+    suggestionsPanel.appendChild(item);
+  });
+  suggestionsPanel.classList.remove('hidden');
+  searchInput.setAttribute('aria-expanded', 'true');
+}
+
+function renderRecentSearches() {
+  const recent = getRecentStocks().filter(sym => STOCK_META[sym]);
+  if (recent.length === 0) { closeSuggestions(); return; }
+  suggestionsPanel.innerHTML = '';
+  const header = document.createElement('div');
+  header.className = 'suggestions-header';
+  header.innerHTML = `<span>Recently Searched</span><button class="suggestions-header__clear" onclick="clearRecentStocks();closeSuggestions();">Clear</button>`;
+  suggestionsPanel.appendChild(header);
+  recent.forEach(sym => {
+    const stock = STOCK_META[sym];
+    const item  = document.createElement('div');
+    item.className = 'suggestion-item';
+    const avatarBg = getAvatarColor(sym);
+    item.innerHTML = `
+      <div class="suggestion-avatar" style="background:${avatarBg};font-size:0.6rem;">🕑</div>
+      <div class="suggestion-info">
+        <div class="suggestion-name">${stock.name}</div>
+        <div class="suggestion-meta">${sym} · ${stock.sector}</div>
+      </div>
+      <span class="suggestion-sector">${stock.sector}</span>
+    `;
+    item.addEventListener('mousedown', (e) => { e.preventDefault(); selectStock(sym); });
+    suggestionsPanel.appendChild(item);
+  });
+  suggestionsPanel.classList.remove('hidden');
+}
+
+function selectStock(symbol) {
+  const meta = STOCK_META[symbol];
+  if (!meta) return;
+  selectedStockSymbol = symbol;
+  hiddenStockKey.value = symbol;
+  searchInput.value = '';
+  searchInput.blur();
+  closeSuggestions();
+  renderSelectedPill(symbol, meta);
+  addRecentStock(symbol);
+  showToast(`Selected: ${meta.name}`, 'success');
+}
+
+function renderSelectedPill(symbol, meta) {
+  pillWrap.innerHTML = `
+    <div class="selected-stock-pill">
+      <span style="font-size:0.85rem;">✓</span>
+      <strong>${symbol}</strong>
+      <span style="font-weight:400;color:var(--green-600);">${meta.name}</span>
+      <span class="badge badge-gold" style="font-size:0.62rem;padding:0.1rem 0.45rem;">${meta.sector}</span>
+      <button class="selected-stock-pill__remove" onclick="clearSelectedStock()" title="Change stock">✕</button>
+    </div>
+  `;
+}
+
+function clearSelectedStock() {
+  selectedStockSymbol = null;
+  hiddenStockKey.value = '';
+  pillWrap.innerHTML = '';
+  searchInput.focus();
+}
+
+const debouncedSearch = debounce((query) => {
+  if (!query || query.trim().length === 0) { renderRecentSearches(); return; }
+  const results = filterStocks(query);
+  renderSuggestions(results, query);
+}, 280);
+
+function handleKeyNav(e) {
+  const items = suggestionsPanel.querySelectorAll('.suggestion-item');
+  if (!items.length) return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); activeIndex = Math.min(activeIndex + 1, items.length - 1); } 
+  else if (e.key === 'ArrowUp') { e.preventDefault(); activeIndex = Math.max(activeIndex - 1, 0); } 
+  else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (activeIndex >= 0 && currentResults[activeIndex]) { selectStock(currentResults[activeIndex].symbol); }
+    return;
+  } else if (e.key === 'Escape') {
+    closeSuggestions();
+    searchInput.blur();
+    return;
+  } else { return; }
+  items.forEach((el, i) => el.classList.toggle('is-active', i === activeIndex));
+  if (items[activeIndex]) items[activeIndex].scrollIntoView({ block: 'nearest' });
+}
+
+/* =========================================================
+   8. WIRE UP SEARCH INPUT EVENTS
+========================================================= */
+searchInput.addEventListener('input', (e) => {
+  if (selectedStockSymbol) { clearSelectedStock(); }
+  debouncedSearch(e.target.value);
+});
+searchInput.addEventListener('focus', () => { if (!searchInput.value.trim()) { renderRecentSearches(); } });
+searchInput.addEventListener('blur', () => { setTimeout(closeSuggestions, 150); });
+searchInput.addEventListener('keydown', handleKeyNav);
+document.addEventListener('click', (e) => { if (!e.target.closest('#stock-search-group')) closeSuggestions(); });
+
+/* =========================================================
+   9. ADD STOCK TO PORTFOLIO
+========================================================= */
+async function addStock() {
+  const name  = document.getElementById('user-name').value.trim();
+  const email = document.getElementById('user-email').value.trim();
+  const key   = selectedStockSymbol || hiddenStockKey.value;
+  const qty   = parseInt(document.getElementById('stock-qty').value);
+  const buy   = parseFloat(document.getElementById('buy-price').value);
+
+  if (!name || !email)       { showToast('Please enter your name and email.', 'error'); return; }
+  if (!key)                  { showToast('Please search and select a stock.', 'error'); return; }
+  if (!qty || qty < 1)       { showToast('Quantity must be at least 1.', 'error'); return; }
+  if (!buy || buy <= 0)      { showToast('Buy price must be greater than 0.', 'error'); return; }
+
+  if (portfolio.some(s => s.key === key)) {
+    showToast(`${STOCK_META[key].name} is already in your portfolio.`, 'error');
+    return;
+  }
+
+  showSearchSpinner(true);
+  showToast('Fetching live price…', '');
+  const priceData = await fetchYahooPrice(key);
+  showSearchSpinner(false);
+
+  const stock = {
+    key, name: STOCK_META[key].name, sector: STOCK_META[key].sector, beta: STOCK_META[key].beta,
+    qty, buyPrice: buy, currentPrice: priceData.price, isLive: priceData.isLive, addedBy: name, addedEmail: email,
+  };
+
+  portfolio.push(stock);
+  clearSelectedStock();
+  hiddenStockKey.value = '';
+  document.getElementById('stock-qty').value   = '';
+  document.getElementById('buy-price').value   = '';
+  renderAll();
+  showToast(`${stock.name} added to portfolio!`, 'success');
+}
+
+/* =========================================================
+   10. REFRESH ALL PRICES
+========================================================= */
+async function refreshPrices() {
+  if (portfolio.length === 0) { showToast('No stocks to refresh.', ''); return; }
+  showToast('Refreshing prices…', '');
+  for (const s of portfolio) {
+    try { localStorage.removeItem(CACHE_KEY_PREFIX + s.key); } catch (_) {}
+    const priceData = await fetchYahooPrice(s.key);
+    s.currentPrice = priceData.price;
+    s.isLive = priceData.isLive;
+  }
+  renderAll();
+  showToast('Prices updated!', 'success');
+}
+
+/* =========================================================
+   11. PORTFOLIO MANAGEMENT
+========================================================= */
+function removeStock(key)  { portfolio = portfolio.filter(s => s.key !== key); renderAll(); }
+function clearPortfolio()  { if (!portfolio.length) return; portfolio = []; renderAll(); showToast('Portfolio cleared.', ''); }
+function resetForm() {
+  ['user-name', 'user-email', 'stock-qty', 'buy-price'].forEach(id => { document.getElementById(id).value = ''; });
+  clearSelectedStock();
+}
+
+/* =========================================================
+   12. DEMO PORTFOLIO
+========================================================= */
+async function loadDemoPortfolio() {
+  portfolio = [];
+  document.getElementById('user-name').value  = 'Arjun Sharma';
+  document.getElementById('user-email').value = 'arjun@everyrupee.in';
+
+  const demoData = [
+    { key: 'RELIANCE',   qty: 12, buyPrice: 2750 },
+    { key: 'TCS',        qty: 5,  buyPrice: 4100 },
+    { key: 'INFY',       qty: 20, buyPrice: 1850 },
+    { key: 'HDFCBANK',   qty: 8,  buyPrice: 1600 },
+    { key: 'ZOMATO',     qty: 50, buyPrice: 88   },
+    { key: 'ADANIPORTS', qty: 15, buyPrice: 780  },
+  ];
+
+  showToast('Loading demo portfolio…', '');
+  for (const d of demoData) {
+    const priceData = await fetchYahooPrice(d.key);
+    portfolio.push({
+      key: d.key, name: STOCK_META[d.key].name, sector: STOCK_META[d.key].sector, beta: STOCK_META[d.key].beta,
+      qty: d.qty, buyPrice: d.buyPrice, currentPrice: priceData.price, isLive: priceData.isLive,
+      addedBy: 'Arjun Sharma', addedEmail: 'arjun@everyrupee.in',
+    });
+  }
+  renderAll();
+  document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+  showToast('Demo portfolio loaded!', 'success');
+}
+
+/* =========================================================
+   13. RISK CALCULATION
+========================================================= */
+function getRisk(stock) {
+  const plPct = ((stock.currentPrice - stock.buyPrice) / stock.buyPrice) * 100;
+  const beta  = stock.beta || 1;
+  if (beta >= 1.0 && plPct < -10) return { level: 'High',   badge: 'badge-red',   icon: '🔴' };
+  if (beta >= 1.0)                 return { level: 'Medium', badge: 'badge-amber', icon: '🟡' };
+  if (plPct < -5)                  return { level: 'Medium', badge: 'badge-amber', icon: '🟡' };
+  return                                  { level: 'Low',    badge: 'badge-green', icon: '🟢' };
+}
+
+/* =========================================================
+   14. PORTFOLIO CALCULATIONS
+========================================================= */
+function calcPortfolio() {
+  let totalInvested = 0, totalValue = 0;
+  portfolio.forEach(s => { totalInvested += s.qty * s.buyPrice; totalValue += s.qty * s.currentPrice; });
+  const totalPL    = totalValue - totalInvested;
+  const totalPLPct = totalInvested > 0 ? (totalPL / totalInvested) * 100 : 0;
+  const ranked = [...portfolio].map(s => ({ ...s, plPct: ((s.currentPrice - s.buyPrice) / s.buyPrice) * 100 })).sort((a, b) => b.plPct - a.plPct);
+  return { totalInvested, totalValue, totalPL, totalPLPct, best: ranked[0] || null, worst: ranked[ranked.length - 1] || null };
+}
+
+function calcHealthScore() {
+  if (portfolio.length === 0) return 0;
+  const divScore  = Math.min(portfolio.length / 4 * 40, 40);
+  const avgPL     = portfolio.reduce((s, p) => s + ((p.currentPrice - p.buyPrice) / p.buyPrice * 100), 0) / portfolio.length;
+  const plScore   = Math.max(0, Math.min(avgPL * 2 + 30, 40));
+  const riskPen   = portfolio.filter(s => getRisk(s).level === 'High').length * 5;
+  return Math.min(100, Math.max(0, Math.round(divScore + plScore - riskPen)));
+}
+
+/* =========================================================
+   15. INSIGHTS & RECOMMENDATIONS
+========================================================= */
+function generateInsights() {
+  const insights = [];
+  portfolio.forEach(s => {
+    const plPct = ((s.currentPrice - s.buyPrice) / s.buyPrice) * 100;
+    if (plPct < -10) insights.push({ type: 'alert', icon: '⚠️', text: `${s.name} has dropped ${Math.abs(plPct).toFixed(1)}% from your buy price. Consider reviewing your position.` });
+    if (plPct > 15)  insights.push({ type: 'good',  icon: '🚀', text: `${s.name} is up ${plPct.toFixed(1)}%! Consider booking partial profits.` });
+    if (plPct > -2 && plPct < 2) insights.push({ type: 'neutral', icon: '📊', text: `${s.name} is near your buy price (${fmtPct(plPct)}). Watch for a breakout.` });
+  });
+  if (portfolio.length === 1) insights.push({ type: 'neutral', icon: '💡', text: 'Your portfolio has only 1 stock. Diversify across sectors to reduce risk.' });
+  const sectors = [...new Set(portfolio.map(s => s.sector))];
+  if (portfolio.length >= 3 && sectors.length >= 3) insights.push({ type: 'good', icon: '✅', text: `Great diversification! Your portfolio spans ${sectors.join(', ')} sectors.` });
+  return insights;
+}
+
+function generateRecommendations() {
+  const recs = [];
+  const { totalPLPct } = calcPortfolio();
+  if (totalPLPct < -5)  recs.push({ icon: '🛑', text: 'Overall portfolio is down. Avoid panic selling — review each position carefully.' });
+  if (totalPLPct > 20)  recs.push({ icon: '💎', text: 'Strong gains! Consider rebalancing — take partial profits on top gainers.' });
+  if (portfolio.length < 4) recs.push({ icon: '📦', text: 'Add more stocks to build a balanced portfolio across different sectors.' });
+  const highRisk = portfolio.filter(s => getRisk(s).level === 'High');
+  if (highRisk.length > 0) recs.push({ icon: '⚡', text: `${highRisk.map(s => s.name).join(', ')} ${highRisk.length === 1 ? 'is' : 'are'} flagged as high risk. Set stop-loss levels.` });
+  const techCount = portfolio.filter(s => s.sector === 'Technology').length;
+  if (techCount >= 2) recs.push({ icon: '💻', text: 'You have high tech concentration. Consider adding exposure to other sectors.' });
+  if (recs.length === 0) recs.push({ icon: '🌱', text: 'Your portfolio looks healthy! Keep monitoring and review quarterly.' });
+  return recs;
+}
+
+/* =========================================================
+   16. RENDER FUNCTIONS
+========================================================= */
+function renderTable() {
+  const tbody      = document.getElementById('portfolio-tbody');
+  const emptyState = document.getElementById('empty-portfolio');
+  const tableWrap  = document.getElementById('portfolio-table-wrap');
+  const badge      = document.getElementById('portfolio-badge');
+  const countLabel = document.getElementById('portfolio-count-label');
+
+  if (portfolio.length === 0) {
+    emptyState.classList.remove('hidden');
+    tableWrap.classList.add('hidden');
+    badge.style.display = 'none';
+    countLabel.textContent = 'No stocks added yet';
+    tbody.innerHTML = '';
+    return;
+  }
+
+  emptyState.classList.add('hidden');
+  tableWrap.classList.remove('hidden');
+  badge.style.display = 'inline-flex';
+  badge.textContent    = `${portfolio.length} Stock${portfolio.length > 1 ? 's' : ''}`;
+  countLabel.textContent = `Tracking ${portfolio.length} position${portfolio.length > 1 ? 's' : ''}`;
+
+  tbody.innerHTML = '';
+  portfolio.forEach((s, i) => {
+    const invested = s.qty * s.buyPrice;
+    const value    = s.qty * s.currentPrice;
+    const pl       = value - invested;
+    const plPct    = ((s.currentPrice - s.buyPrice) / s.buyPrice) * 100;
+    const risk     = getRisk(s);
+    const isProfit = pl >= 0;
+    const liveIndicator = s.isLive 
+      ? '<span class="badge badge-green" style="font-size: 0.6rem; padding: 0.15rem 0.4rem; margin-top: 4px; display: inline-block;">⚡ LIVE</span>'
+      : '<span class="badge badge-amber" style="font-size: 0.6rem; padding: 0.15rem 0.4rem; margin-top: 4px; display: inline-block;" title="Estimated Price">🕒 EST</span>';
+
+    const tr = document.createElement('tr');
+    tr.className = 'row-enter';
+    tr.style.animationDelay = (i * 0.06) + 's';
+    tr.innerHTML = `
+      <td><div class="td-stock">${s.name}</div><div class="td-symbol">${s.key} · ${s.sector}</div></td>
+      <td>${s.qty}</td>
+      <td>${fmt(s.buyPrice)}</td>
+      <td><strong>${fmt(s.currentPrice)}</strong><br/>${liveIndicator}</td>
+      <td>${fmt(invested)}</td>
+      <td>${fmt(value)}</td>
+      <td class="${isProfit ? 'text-profit' : 'text-loss'}"><strong>${fmt(pl)}</strong><br/><small>${fmtPct(plPct)}</small></td>
+      <td><span class="badge ${risk.badge}">${risk.icon} ${risk.level}</span></td>
+      <td><button class="btn btn-outline btn-sm" onclick="removeStock('${s.key}')" title="Remove">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderStats() {
+  if (portfolio.length === 0) { document.getElementById('dashboard').classList.add('hidden'); return; }
+  document.getElementById('dashboard').classList.remove('hidden');
+  const { totalInvested, totalValue, totalPL, totalPLPct, best, worst } = calcPortfolio();
+  const health = calcHealthScore();
+
+  document.getElementById('stat-invested').textContent      = fmt(totalInvested);
+  document.getElementById('stat-invested-label').textContent = `${portfolio.length} position${portfolio.length > 1 ? 's' : ''}`;
+  document.getElementById('stat-value').textContent         = fmt(totalValue);
+  document.getElementById('stat-value-label').textContent   = 'Live market value';
+
+  const plEl    = document.getElementById('stat-pl');
+  const plPctEl = document.getElementById('stat-pl-pct');
+  plEl.textContent    = fmt(totalPL);
+  plPctEl.textContent = fmtPct(totalPLPct);
+  plEl.className    = 'stat-card__value ' + (totalPL >= 0 ? 'text-profit' : 'text-loss');
+  plPctEl.className = 'stat-card__change ' + (totalPL >= 0 ? 'text-profit' : 'text-loss');
+
+  const healthLabel = health >= 75 ? 'Excellent' : health >= 50 ? 'Good' : health >= 25 ? 'Fair' : 'Needs Attention';
+  document.getElementById('stat-health').textContent      = `${health}/100`;
+  document.getElementById('stat-health-label').textContent = healthLabel;
+
+  if (best) {
+    const bp = ((best.currentPrice - best.buyPrice) / best.buyPrice * 100);
+    document.getElementById('best-performer').innerHTML = `<strong style="color:var(--green-700);">${best.name}</strong><span class="badge badge-green" style="margin-left:0.5rem;">${fmtPct(bp)}</span><div style="font-size:0.8rem;color:#6b7280;margin-top:4px;">${best.qty} shares · Current: ${fmt(best.currentPrice)}</div>`;
+  }
+  if (worst) {
+    const wp = ((worst.currentPrice - worst.buyPrice) / worst.buyPrice * 100);
+    document.getElementById('worst-performer').innerHTML = `<strong style="color:var(--red-500);">${worst.name}</strong><span class="badge badge-red" style="margin-left:0.5rem;">${fmtPct(wp)}</span><div style="font-size:0.8rem;color:#6b7280;margin-top:4px;">${worst.qty} shares · Current: ${fmt(worst.currentPrice)}</div>`;
+  }
+
+  const circumference = 238.76;
+  const offset     = circumference - (health / 100) * circumference;
+  const ringColor  = health >= 75 ? 'var(--green-500)' : health >= 50 ? 'var(--gold-500)' : 'var(--red-500)';
+  document.getElementById('health-ring-circle').style.strokeDashoffset = offset;
+  document.getElementById('health-ring-circle').style.stroke = ringColor;
+  document.getElementById('health-ring-text').textContent = health;
+  document.getElementById('health-label').textContent = `${healthLabel} Portfolio`;
+  document.getElementById('health-desc').textContent  = health >= 75 ? 'Well-diversified and performing well.' : health >= 50 ? 'Good foundation, room for improvement.' : 'Consider diversifying and reviewing losses.';
+}
+
+function renderChart() {
+  const canvas = document.getElementById('pie-chart');
+  const ctx    = canvas.getContext('2d');
+  const labels = portfolio.map(s => s.name);
+  const values = portfolio.map(s => s.qty * s.currentPrice);
+  const colors = ['#2d5016','#4a8026','#c49a2a','#3a6b1e','#d4aa40','#5c9e35','#a67c1f','#a8d080'];
+
+  if (pieChart) {
+    pieChart.data.labels = labels;
+    pieChart.data.datasets[0].data = values;
+    pieChart.data.datasets[0].backgroundColor = colors.slice(0, values.length);
+    pieChart.update();
+    return;
+  }
+
+  pieChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: values, backgroundColor: colors.slice(0, values.length), borderColor: '#faf6ee', borderWidth: 3, hoverOffset: 8 }] },
+    options: {
+      cutout: '62%',
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'DM Sans', size: 12 }, color: '#1a2e1a', padding: 14, boxWidth: 12, boxHeight: 12 } },
+        tooltip: { callbacks: { label: ctx => { const total = ctx.dataset.data.reduce((a, b) => a + b, 0); const pct = ((ctx.raw / total) * 100).toFixed(1); return `${ctx.label}: ₹${ctx.raw.toLocaleString('en-IN', { maximumFractionDigits: 0 })} (${pct}%)`; } } }
+      },
+      animation: { animateRotate: true, duration: 700 }
+    }
+  });
+}
+
+function renderInsights() {
+  const insights  = generateInsights();
+  const recs      = generateRecommendations();
+  const insightsEl = document.getElementById('insights-list');
+  const recsEl     = document.getElementById('recommendations-list');
+  document.getElementById('insights-count').textContent = insights.length;
+  insightsEl.innerHTML = insights.length === 0
+    ? '<div class="empty-state" style="padding:var(--space-md);"><div class="empty-state__text">No alerts right now. Your portfolio looks stable.</div></div>'
+    : insights.map(ins => `<div class="insight-item ${ins.type === 'alert' ? 'insight-item--alert' : ins.type === 'good' ? 'insight-item--good' : ''}"><span class="insight-icon">${ins.icon}</span><span>${ins.text}</span></div>`).join('');
+  recsEl.innerHTML = recs.map(r => `<div class="insight-item"><span class="insight-icon">${r.icon}</span><span>${r.text}</span></div>`).join('');
+}
+
+function renderAll() {
+  renderTable();
+  renderStats();
+  if (portfolio.length > 0) { renderChart(); renderInsights(); }
+}
+
+/* =========================================================
+   18. EXCEL IMPORT
+========================================================= */
+function triggerExcelImport() {
+  const fileInput = document.getElementById('excel-upload');
+  const file = fileInput.files[0];
+  if (!file) { showToast('Please select an Excel file first.', 'error'); return; }
+  handleExcelUpload(file);
+}
+
+function mapSymbolToKey(symbol) {
+  if (!symbol) return null;
+  const cleanSymbol = symbol.toString().trim().toUpperCase();
+  if (STOCK_META[cleanSymbol]) return cleanSymbol;
+  return null;
+}
+
+function handleExcelUpload(file) {
+  const userName = document.getElementById('user-name').value.trim() || 'Imported User';
+  const userEmail = document.getElementById('user-email').value.trim() || 'import@system';
+  showToast('Importing portfolio... this may take a moment.', '');
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      if (!workbook.SheetNames.length) { showToast('The uploaded Excel file is empty.', 'error'); return; }
+
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      const json = XLSX.utils.sheet_to_json(worksheet);
+      if (!json.length) { showToast('No valid rows found in the Excel sheet.', 'error'); return; }
+
+      let importedCount = 0; let skippedCount = 0;
+      document.getElementById('excel-upload').disabled = true;
+
+      for (const row of json) {
+        const symbolRaw = row['Tradingsymbol'] || row['Symbol'] || row['Instrument'];
+        const qtyRaw = row['Quantity'] || row['Qty'];
+        const priceRaw = row['Average Price'] || row['Avg. cost'] || row['Buy Price'] || row['Average cost'];
+
+        const stockKey = mapSymbolToKey(symbolRaw);
+        const qty = parseInt(qtyRaw);
+        const buyPrice = parseFloat(priceRaw);
+
+        if (!stockKey || isNaN(qty) || isNaN(buyPrice) || qty <= 0 || buyPrice <= 0) { skippedCount++; continue; }
+
+        const existingIndex = portfolio.findIndex(s => s.key === stockKey);
+        if (existingIndex > -1) {
+          const existing = portfolio[existingIndex];
+          const totalQty = existing.qty + qty;
+          const avgPrice = ((existing.qty * existing.buyPrice) + (qty * buyPrice)) / totalQty;
+          existing.qty = totalQty;
+          existing.buyPrice = avgPrice;
+          importedCount++;
+          continue; 
+        }
+
+        const priceData = await fetchYahooPrice(stockKey);
+        portfolio.push({
+          key: stockKey, name: STOCK_META[stockKey].name, sector: STOCK_META[stockKey].sector, beta: STOCK_META[stockKey].beta,
+          qty: qty, buyPrice: buyPrice, currentPrice: priceData.price, isLive: priceData.isLive, addedBy: userName, addedEmail: userEmail
+        });
+        importedCount++;
+      }
+
+      document.getElementById('excel-upload').value = '';
+      document.getElementById('excel-upload').disabled = false;
+
+      if (importedCount > 0) {
+        showToast(`Portfolio imported successfully: ${importedCount} added/merged (Skipped ${skippedCount})`, 'success');
+        renderAll();
+        document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+      } else {
+        showToast(`No supported stocks found. Skipped ${skippedCount} rows.`, 'error');
+      }
+
+    } catch (error) {
+      console.error('Excel Parsing Error:', error);
+      showToast('Failed to parse file. Ensure it is a valid Zerodha .xlsx or .xls file.', 'error');
+      document.getElementById('excel-upload').disabled = false;
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/* =========================================================
+   19. AI ASSISTANT LOGIC
+========================================================= */
+function toggleAIChat() {
+  const windowEl = document.getElementById('ai-chat-window');
+  windowEl.classList.toggle('hidden');
+  if (!windowEl.classList.contains('hidden')) { document.getElementById('ai-chat-input').focus(); }
+}
+
+function buildAIContext() {
+  if (!portfolio || portfolio.length === 0) { return { portfolio: [], summary: null, hasData: false }; }
+  const stats = calcPortfolio();
+  const health = calcHealthScore();
+  const cleanPortfolio = portfolio.map(s => ({
+    symbol: s.key, name: s.name, sector: s.sector, qty: s.qty, buyPrice: s.buyPrice,
+    currentPrice: s.currentPrice, plPct: ((s.currentPrice - s.buyPrice) / s.buyPrice) * 100
+  }));
+  return {
+    hasData: true, portfolio: cleanPortfolio,
+    summary: { totalInvested: stats.totalInvested, totalValue: stats.totalValue, totalPL: stats.totalPL, totalPLPct: stats.totalPLPct, bestStock: stats.best ? stats.best.name : null, worstStock: stats.worst ? stats.worst.name : null, healthScore: health }
+  };
+}
+
+function appendAIMessage(text, sender = 'ai') {
+  const container = document.getElementById('ai-chat-messages');
+  const quickActions = document.getElementById('ai-quick-actions');
+  if (sender === 'user' && quickActions) { quickActions.remove(); }
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `ai-message ai-message--${sender}`;
+  let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  formattedText = formattedText.replace(/\n/g, '<br/>');
+  msgDiv.innerHTML = formattedText;
+  container.appendChild(msgDiv);
+  container.scrollTop = container.scrollHeight;
+}
+
+function showAITyping() {
+  const container = document.getElementById('ai-chat-messages');
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'ai-typing';
+  typingDiv.id = 'ai-typing-indicator';
+  typingDiv.innerHTML = '<div class="ai-typing-dot"></div><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div>';
+  container.appendChild(typingDiv);
+  container.scrollTop = container.scrollHeight;
+}
+
+function hideAITyping() {
+  const typing = document.getElementById('ai-typing-indicator');
+  if (typing) typing.remove();
+}
+
+async function sendAIChatMessage(forcedText = null) {
+  const inputEl = document.getElementById('ai-chat-input');
+  const message = forcedText || inputEl.value.trim();
+  if (!message) return;
+  
+  appendAIMessage(message, 'user');
+  inputEl.value = '';
+  const context = buildAIContext();
+  showAITyping();
+  
+  try {
+    // GUARANTEED PORT 5001 TO MATCH BACKEND
+    const response = await fetch('http://localhost:5001/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, context })
+    });
+    
+    if (!response.ok) {
+      const errText = await response.text();
+      let errMsg = 'AI Service unreachable';
+      try {
+        const errData = JSON.parse(errText);
+        errMsg = errData.reply || errData.error || errMsg;
+      } catch (e) {}
+      throw new Error(errMsg);
+    }
+    
+    const data = await response.json();
+    hideAITyping();
+    appendAIMessage(data.reply, 'ai');
+    
+  } catch (error) {
+    console.error(error);
+    hideAITyping();
+    
+    setTimeout(() => {
+      if (!context.hasData) {
+        appendAIMessage("You don't have any stocks in your portfolio right now! Try clicking **⚡ Demo Mode** or uploading an Excel file first so I have data to analyze.", 'ai');
+      } else {
+        const valFormatted = context.summary.totalValue.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+        appendAIMessage(`*(Fallback Mode)* I can see your portfolio is worth **${valFormatted}** with a health score of **${context.summary.healthScore}/100**. \n\n*Note: To get deep AI analysis, ensure the Node.js backend server is running on port 5001.*`, 'ai');
+      }
+    }, 600);
+  }
+}
+
+function handleAIChatEnter(e) { if (e.key === 'Enter') sendAIChatMessage(); }
+function sendQuickMessage(text) { sendAIChatMessage(text); }
+
+renderAll();
+</script>
+<!--
+═══════════════════════════════════════════════════════════════════════════════
+  EVERYRUPEE — AI PORTFOLIO REPORT FEATURE  (FIXED)
+  Replace your previous additions with this file.
+  3-step integration is identical — only the JS internals changed.
+═══════════════════════════════════════════════════════════════════════════════
+
+  STEP 1 — In <head>, add CDN after existing scripts:
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  STEP 2 — Dashboard button: paste after <div id="dashboard" class="hidden">
+
+  STEP 3 — CTA section + script: paste just before </body>
+═══════════════════════════════════════════════════════════════════════════════
+-->
+
+
+<!-- FIX: Removed floating download button -->
+
+<!-- ── STEP 3A: End-of-page CTA (paste before <footer>) ─────────────────── -->
+<section class="section" id="report-download-section"
+         style="padding:var(--space-xl) var(--space-lg);">
+  <div class="card card--gold-border" style="text-align:center;padding:var(--space-xl);">
+    <h2 class="card__title" style="font-size:1.4rem;margin-bottom:0.5rem;">
+      📊 Get Your Personalized Investment Report
+    </h2>
+    <p class="card__subtitle"
+       style="margin-top:0.5rem;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.6;">
+      Download a detailed AI-powered report with insights, risk analysis, and
+      smart recommendations tailored to your portfolio.
+    </p>
+    <button class="btn btn-gold btn-lg" onclick="generateAIReport()"
+            style="margin-top:var(--space-md);">
+      📄 Download Your Report
+    </button>
+  </div>
+</section>
+
+
+<!-- ── STEP 3B: Script (paste just before </body>) ──────────────────────── -->
+<script>
+'use strict';
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   AI ANALYSIS
+   ───────────────────────────────────────────────────────────────────────── */
+async function generateAIAnalysisText(portfolioData, summaryData) {
+  const prompt = `You are a professional financial advisor at a premium wealth management firm.
+
+Write a detailed, human-like portfolio analysis. Your tone should feel like Zerodha Varsity or a personal wealth manager — clear, warm, and insightful. Avoid robotic filler language.
+
+Portfolio JSON:
+${JSON.stringify(portfolioData, null, 2)}
+
+Summary:
+- Total Invested: ₹${summaryData.totalInvested.toLocaleString('en-IN')}
+- Current Value: ₹${summaryData.totalValue.toLocaleString('en-IN')}
+- P/L: ₹${summaryData.totalPL.toLocaleString('en-IN')} (${summaryData.totalPLPct.toFixed(2)}%)
+- Health Score: ${summaryData.healthScore}/100
+- Best Performer: ${summaryData.bestStock || 'N/A'}
+- Worst Performer: ${summaryData.worstStock || 'N/A'}
+
+Write these sections with the exact headings shown:
+
+## Performance Summary
+## Risk Analysis
+## Diversification Insights
+## Strengths
+## Areas to Watch
+## Actionable Recommendations
+## Closing Note
+
+Keep total length under 600 words.`;
+
+  // 1. Try existing Node backend
+  try {
+    const res = await fetch('http://localhost:5001/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: prompt, context: { hasData: true, portfolio: portfolioData, summary: summaryData } })
+    });
+    if (res.ok) { const d = await res.json(); if (d.reply) return d.reply; }
+  } catch (_) {}
+
+  // 2. Try Claude API directly
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    if (res.ok) {
+      const d = await res.json();
+      const text = d.content?.find(b => b.type === 'text')?.text;
+      if (text) return text;
+    }
+  } catch (_) {}
+
+  // 3. Offline fallback — still personalised
+  const { totalPLPct, bestStock, worstStock, healthScore } = summaryData;
+  const sentiment = totalPLPct >= 5 ? 'performing well' : totalPLPct >= 0 ? 'holding steady' : 'facing headwinds';
+  const sectors   = [...new Set(portfolioData.map(s => s.sector))];
+  return `## Performance Summary\nYour portfolio is currently ${sentiment}, with a net return of ${totalPLPct.toFixed(2)}% and a health score of ${healthScore}/100.${bestStock ? ` ${bestStock} stands out as your top performer this period.` : ''} Staying patient and regularly reviewing positions will be key to long-term success.\n\n## Risk Analysis\nThe portfolio carries a mixed risk profile.${worstStock ? ` ${worstStock} warrants close monitoring given its current trajectory.` : ' All positions appear stable at present.'} Maintaining stop-loss levels on volatile holdings can protect downside without limiting growth potential.\n\n## Diversification Insights\nYour holdings span ${sectors.length} sector${sectors.length > 1 ? 's' : ''}: ${sectors.join(', ')}. ${sectors.length < 4 ? 'There is room to improve diversification — consider adding exposure to sectors currently absent.' : 'This is a solid multi-sector spread that helps cushion against single-sector shocks.'}\n\n## Strengths\n${bestStock ? `• ${bestStock} is a standout performer — consider holding and letting profits run.\n` : ''}• You are actively tracking your investments, which is the first step to better outcomes.\n${sectors.length >= 3 ? '• Multi-sector exposure reduces concentration risk.\n' : ''}\n## Areas to Watch\n${worstStock ? `• ${worstStock} is underperforming — review your original thesis.\n` : ''}• Ensure no single stock exceeds 25% of total portfolio value.\n• Review positions that have been flat for extended periods.\n\n## Actionable Recommendations\n1. Set a firm stop-loss (7–10% below buy price) on your highest-risk positions.\n2. ${totalPLPct > 15 ? 'Consider booking partial profits on top gainers to lock in returns.' : 'Accumulate quality stocks during dips — volatility is your friend with conviction.'}\n3. Add at least one stock from a sector not currently in your portfolio.\n4. Review this portfolio quarterly — 30 minutes every 3 months makes a meaningful difference.\n5. Keep 10–15% of your intended allocation in cash for opportunistic buying.\n\n## Closing Note\nBuilding wealth through equities is a long game. The fact that you are actively tracking and analysing your portfolio puts you ahead of most retail investors. Stay disciplined, review your thesis regularly, and do not let short-term noise distract from your long-term goals.`;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   REPORT HTML BUILDER
+   ───────────────────────────────────────────────────────────────────────── */
+function buildReportHTML(aiText, userName, userEmail) {
+  const stats    = calcPortfolio();
+  const health   = calcHealthScore();
+  const insights = generateInsights();
+  const date     = new Date().toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+
+  const plColour     = stats.totalPL >= 0 ? '#15803d' : '#dc2626';
+  const plSign       = stats.totalPL >= 0 ? '+' : '';
+  const healthColour = health >= 75 ? '#15803d' : health >= 50 ? '#b45309' : '#dc2626';
+  const healthLabel  = health >= 75 ? 'Excellent' : health >= 50 ? 'Good' : health >= 25 ? 'Fair' : 'Needs Attention';
+
+  /* Holdings rows */
+  const holdingsRows = portfolio.map(s => {
+    const invested = s.qty * s.buyPrice;
+    const value    = s.qty * s.currentPrice;
+    const pl       = value - invested;
+    const plPct    = ((s.currentPrice - s.buyPrice) / s.buyPrice) * 100;
+    const c        = pl >= 0 ? '#15803d' : '#dc2626';
+    return `
+    <tr>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;">
+        <strong style="display:block;font-size:11px;color:#111827;">${s.name}</strong>
+        <span style="font-size:9px;color:#6b7280;">${s.key} · ${s.sector}</span>
+      </td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:11px;">${s.qty}</td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:11px;">₹${s.buyPrice.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:11px;">₹${s.currentPrice.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:11px;">₹${invested.toLocaleString('en-IN',{minimumFractionDigits:0,maximumFractionDigits:0})}</td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:11px;">₹${value.toLocaleString('en-IN',{minimumFractionDigits:0,maximumFractionDigits:0})}</td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-size:11px;color:${c};font-weight:600;">
+        ${pl >= 0 ? '+' : ''}₹${Math.abs(pl).toLocaleString('en-IN',{minimumFractionDigits:0,maximumFractionDigits:0})}<br>
+        <span style="font-weight:400;font-size:9px;">${(plPct >= 0 ? '+' : '')+plPct.toFixed(2)}%</span>
+      </td>
+    </tr>`;
+  }).join('');
+
+  /* Risk breakdown */
+  const rg = { High:[], Medium:[], Low:[] };
+  portfolio.forEach(s => {
+    const plPct = ((s.currentPrice - s.buyPrice) / s.buyPrice) * 100;
+    const beta  = s.beta || 1;
+    const lvl   = (beta >= 1.0 && plPct < -10) ? 'High' : (beta >= 1.0 || plPct < -5) ? 'Medium' : 'Low';
+    rg[lvl].push(s.name);
+  });
+
+  /* AI text → HTML */
+  const aiHTML = aiText.split('\n').map(line => {
+    if (line.startsWith('## ')) return `<h3 style="font-size:12px;font-weight:700;color:#1a2e1a;margin:14px 0 5px;border-bottom:1px solid #e5e7eb;padding-bottom:3px;">${line.slice(3)}</h3>`;
+    if (line.match(/^\d+\./))    return `<p style="margin:3px 0 3px 10px;font-size:10.5px;color:#374151;">${line}</p>`;
+    if (line.match(/^[•\-]\s/))  return `<p style="margin:2px 0 2px 10px;font-size:10.5px;color:#374151;">• ${line.replace(/^[•\-]\s*/,'')}</p>`;
+    if (line.trim() === '')      return '';
+    return `<p style="margin:3px 0;font-size:10.5px;color:#374151;line-height:1.55;">${line.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p>`;
+  }).join('');
+
+  return `<div style="box-sizing:border-box; width:760px; margin:0 auto; padding:32px; background:#ffffff; font-family:Arial,sans-serif; color:#111827;">
+  <!-- HEADER -->
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:3px solid #15803d;margin-bottom:20px;">
+    <div>
+      <div style="font-size:20px;font-weight:800;color:#15803d;">₹ EveryRupee</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:2px;">Personal Portfolio Report</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:12px;font-weight:600;color:#111827;">${userName || 'Portfolio Holder'}</div>
+      <div style="font-size:10px;color:#6b7280;">${userEmail || ''}</div>
+      <div style="font-size:10px;color:#6b7280;margin-top:2px;">${date}</div>
+    </div>
+  </div>
+
+  <!-- SUMMARY CARDS — use a table for reliable PDF layout -->
+  <table style="width:100%;table-layout:fixed;border-collapse:separate;border-spacing:8px;margin-bottom:20px;"><tr>
+    <td style="background:#f0fdf4;border-radius:6px;padding:12px;border:1px solid #bbf7d0;width:25%;">
+      <div style="font-size:8px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Total Invested</div>
+      <div style="font-size:15px;font-weight:800;color:#111827;">₹${stats.totalInvested.toLocaleString('en-IN',{maximumFractionDigits:0})}</div>
+      <div style="font-size:8px;color:#6b7280;margin-top:2px;">${portfolio.length} position${portfolio.length>1?'s':''}</div>
+    </td>
+    <td style="background:#fefce8;border-radius:6px;padding:12px;border:1px solid #fde68a;width:25%;">
+      <div style="font-size:8px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Current Value</div>
+      <div style="font-size:15px;font-weight:800;color:#111827;">₹${stats.totalValue.toLocaleString('en-IN',{maximumFractionDigits:0})}</div>
+      <div style="font-size:8px;color:#6b7280;margin-top:2px;">Market value</div>
+    </td>
+    <td style="background:${stats.totalPL>=0?'#f0fdf4':'#fef2f2'};border-radius:6px;padding:12px;border:1px solid ${stats.totalPL>=0?'#bbf7d0':'#fecaca'};width:25%;">
+      <div style="font-size:8px;font-weight:700;color:${plColour};text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Profit / Loss</div>
+      <div style="font-size:15px;font-weight:800;color:${plColour};">${plSign}₹${Math.abs(stats.totalPL).toLocaleString('en-IN',{maximumFractionDigits:0})}</div>
+      <div style="font-size:8px;color:${plColour};margin-top:2px;">${(stats.totalPLPct>=0?'+':'')+stats.totalPLPct.toFixed(2)}%</div>
+    </td>
+    <td style="background:#f5f3ff;border-radius:6px;padding:12px;border:1px solid #ddd6fe;width:25%;">
+      <div style="font-size:8px;font-weight:700;color:#6d28d9;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Health Score</div>
+      <div style="font-size:15px;font-weight:800;color:${healthColour};">${health}/100</div>
+      <div style="font-size:8px;color:#6b7280;margin-top:2px;">${healthLabel}</div>
+    </td>
+  </tr></table>
+
+  <!-- HOLDINGS -->
+  <div style="font-size:13px;font-weight:700;color:#1a2e1a;margin:0 0 8px;padding-bottom:5px;border-bottom:2px solid #15803d;">Portfolio Holdings</div>
+  <table style="width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:20px;">
+    <thead><tr style="background:#f0fdf4;">
+      <th style="padding:7px 8px;text-align:left;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">Stock</th>
+      <th style="padding:7px 8px;text-align:center;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">Qty</th>
+      <th style="padding:7px 8px;text-align:right;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">Buy</th>
+      <th style="padding:7px 8px;text-align:right;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">Current</th>
+      <th style="padding:7px 8px;text-align:right;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">Invested</th>
+      <th style="padding:7px 8px;text-align:right;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">Value</th>
+      <th style="padding:7px 8px;text-align:right;font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;">P/L</th>
+    </tr></thead>
+    <tbody>${holdingsRows}</tbody>
+  </table>
+
+  <!-- AI ANALYSIS -->
+  <div style="font-size:13px;font-weight:700;color:#1a2e1a;margin:0 0 8px;padding-bottom:5px;border-bottom:2px solid #15803d;">AI-Powered Analysis</div>
+  <div style="margin-bottom:20px;background:#fafafa;border-radius:6px;padding:14px;border:1px solid #e5e7eb;">${aiHTML}</div>
+
+  <!-- INSIGHTS -->
+  <div style="font-size:13px;font-weight:700;color:#1a2e1a;margin:0 0 8px;padding-bottom:5px;border-bottom:2px solid #15803d;">Portfolio Insights</div>
+  <div style="margin-bottom:20px;">
+    ${insights.map(ins=>`<div style="display:flex;gap:7px;padding:7px 10px;border-radius:5px;margin-bottom:5px;background:${ins.type==='alert'?'#fef2f2':ins.type==='good'?'#f0fdf4':'#f9fafb'};border-left:3px solid ${ins.type==='alert'?'#dc2626':ins.type==='good'?'#15803d':'#9ca3af'};">
+      <span style="font-size:12px;">${ins.icon}</span>
+      <span style="font-size:10.5px;color:#374151;line-height:1.5;">${ins.text}</span>
+    </div>`).join('')}
+  </div>
+
+  <!-- RISK -->
+  <div style="font-size:13px;font-weight:700;color:#1a2e1a;margin:0 0 8px;padding-bottom:5px;border-bottom:2px solid #15803d;">Risk Breakdown</div>
+  <table style="width:100%;table-layout:fixed;border-collapse:separate;border-spacing:8px;margin-bottom:20px;"><tr>
+    <td style="background:#fef2f2;border-radius:6px;padding:10px;border:1px solid #fecaca;vertical-align:top;">
+      <div style="font-size:9px;font-weight:700;color:#dc2626;margin-bottom:5px;">🔴 HIGH RISK</div>
+      ${rg.High.length?rg.High.map(n=>`<div style="font-size:10px;color:#374151;margin-bottom:2px;">• ${n}</div>`).join(''):'<div style="font-size:10px;color:#6b7280;">None</div>'}
+    </td>
+    <td style="background:#fffbeb;border-radius:6px;padding:10px;border:1px solid #fde68a;vertical-align:top;">
+      <div style="font-size:9px;font-weight:700;color:#b45309;margin-bottom:5px;">🟡 MEDIUM RISK</div>
+      ${rg.Medium.length?rg.Medium.map(n=>`<div style="font-size:10px;color:#374151;margin-bottom:2px;">• ${n}</div>`).join(''):'<div style="font-size:10px;color:#6b7280;">None</div>'}
+    </td>
+    <td style="background:#f0fdf4;border-radius:6px;padding:10px;border:1px solid #bbf7d0;vertical-align:top;">
+      <div style="font-size:9px;font-weight:700;color:#15803d;margin-bottom:5px;">🟢 LOW RISK</div>
+      ${rg.Low.length?rg.Low.map(n=>`<div style="font-size:10px;color:#374151;margin-bottom:2px;">• ${n}</div>`).join(''):'<div style="font-size:10px;color:#6b7280;">None</div>'}
+    </td>
+  </tr></table>
+
+  <!-- FOOTER -->
+  <div style="border-top:1px solid #e5e7eb;padding-top:10px;display:flex;justify-content:space-between;">
+    <span style="font-size:9px;color:#9ca3af;">₹ EveryRupee · ${date}</span>
+    <span style="font-size:9px;color:#9ca3af;">Prices may be delayed. Not financial advice.</span>
+  </div>
+</div>`;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MAIN GENERATOR
+   ───────────────────────────────────────────────────────────────────────── */
+async function generateAIReport() {
+  if (portfolio.length === 0) {
+    showToast('Please add stocks to your portfolio first.', 'error');
+    return;
+  }
+
+  const btns = document.querySelectorAll('[onclick="generateAIReport()"]');
+  btns.forEach(b => { b.disabled = true; b.style.opacity = '0.65'; b.style.cursor = 'not-allowed'; });
+
+  showToast('Generating AI analysis…', '');
+
+  // ── THE FIX: render into an off-screen div appended to <body>
+  //    html2canvas CANNOT measure elements with display:none — renders blank.
+  //    position:fixed/-9999px renders correctly then disappears after export.
+  const wrapper = document.createElement('div');
+  // Added display:flex and justify-content:center to force perfect centering
+  wrapper.style.cssText = 'position:absolute; left:0; top:0; width: 100%; display: flex; justify-content: center; background:#fff; z-index:-9999; opacity:0; pointer-events:none;';
+  document.body.appendChild(wrapper);
+
+  try {
+    const userName  = document.getElementById('user-name')?.value?.trim()  || 'Portfolio Holder';
+    const userEmail = document.getElementById('user-email')?.value?.trim() || '';
+
+    const stats  = calcPortfolio();
+    const health = calcHealthScore();
+
+    const portfolioData = portfolio.map(s => ({
+      symbol: s.key, name: s.name, sector: s.sector,
+      qty: s.qty, buyPrice: s.buyPrice, currentPrice: s.currentPrice,
+      plPct: ((s.currentPrice - s.buyPrice) / s.buyPrice) * 100,
+      beta: s.beta
+    }));
+    const summaryData = {
+      totalInvested: stats.totalInvested, totalValue: stats.totalValue,
+      totalPL: stats.totalPL, totalPLPct: stats.totalPLPct,
+      bestStock: stats.best?.name || null, worstStock: stats.worst?.name || null,
+      healthScore: health
+    };
+
+    showToast('AI is analysing your portfolio…', '');
+    const aiText = await generateAIAnalysisText(portfolioData, summaryData);
+
+    showToast('Building PDF…', '');
+    const html = buildReportHTML(aiText, userName, userEmail);
+    wrapper.innerHTML = html;
+
+    // Give the browser one frame to lay out before capturing
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+    const element  = wrapper.firstElementChild;
+    const fileName = `EveryRupee_Report_${(userName).replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.pdf`;
+
+    await html2pdf()
+      .set({
+        margin:       0,
+        filename:     fileName,
+        image:        { type: 'jpeg', quality: 0.97 },
+        html2canvas:  {
+          scale:          2,
+          useCORS:        true,
+          letterRendering: true,
+          windowWidth:    760,
+          scrollX:        0,
+          scrollY:        0,
+          width:          760,
+          x:              0,
+          y:              0,
+        },
+        jsPDF: { unit: 'px', format: [760, 1200], orientation: 'portrait', hotfixes: ['px_scaling'] },
+        pagebreak: { mode: ['css', 'legacy'] }
+      })
+      .from(element)
+      .save();
+
+    showToast('Report downloaded! 🎉', 'success');
+
+  } catch (err) {
+    console.error('[ReportGenerator]', err);
+    showToast('Report generation failed — check console for details.', 'error');
+  } finally {
+    document.body.removeChild(wrapper);
+    btns.forEach(b => { b.disabled = false; b.style.opacity = ''; b.style.cursor = ''; });
+  }
+}
+</script>
+
+<!-- FIX: Footer moved below report section -->
+<footer style="background: var(--green-900); color: rgba(250,246,238,0.45); text-align: center; padding: var(--space-lg); font-size: 0.8rem; margin-top: var(--space-xl);">
+  <span class="font-display" style="color: var(--gold-400); font-size: 1rem;">EveryRupee</span>
+  — Investment Assistant &nbsp;·&nbsp; Prices may be delayed. Not financial advice. &nbsp;·&nbsp;
+  <a href="#" style="color: var(--gold-300); text-decoration: none;">Privacy Policy</a>
+</footer>
+</body>
+</html>

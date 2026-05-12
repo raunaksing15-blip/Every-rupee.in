@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Advisor Match | EveryRupee</title>
+    <style>
+        :root {
+            /* Background gradient: deep green to dark green */
+            --bg-color: linear-gradient(135deg, #fdfdfc 0%,#fdfdfc 100%);
+            /* Container background: glass effect */
+            --container-bg: #1a2e1a ;
+            /* Input fields: dark green/black blend */
+            --input-bg: rgba(5, 15, 10, 0.6);
+            /* Borders: light with low opacity, input border subtle gold/green */
+            --border-color: rgba(212, 175, 55, 0.15);
+            /* Focus: slight border highlight */
+            --input-focus-border: rgba(212, 175, 55, 0.5);
+
+            /* Text colors */
+            --text-main: #fbf8cc; /* Headings: light cream / off-white */
+            --text-muted: #a3b1a8; /* Subtext: soft gray/green */
+            
+            /* Primary Colors / Button: Gold background */
+            --primary-glow: rgba(212, 175, 55, 0.4);
+            --primary-color: #d4af37;
+            --btn-gradient: linear-gradient(135deg, #e5c15e, #d4af37);
+            --btn-hover-gradient: linear-gradient(135deg, #f5d16e, #e5c15e);
+            --btn-text: #111111;
+            
+            /* Result Card */
+            --result-bg: rgba(11, 32, 22, 0.3);
+            --result-border: rgba(150, 180, 160, 0.2);
+            --success-color: #4ade80;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: var(--bg-color);
+            background-attachment: fixed;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--container-bg);
+            /* glass effect / backdrop blur */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin-top: 0;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-size: 1.05rem;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+            color: var(--text-main);
+        }
+
+        /* Form Layout */
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        @media (max-width: 600px) {
+            .row {
+                grid-template-columns: 1fr;
+                gap: 0;
+                margin-bottom: 0;
+            }
+            .row .form-group {
+                margin-bottom: 28px;
+            }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 16px 18px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #778877; /* Muted gray */
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--input-focus-border);
+            /* Soft gold glow */
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            background-color: rgba(10, 20, 15, 0.8);
+        }
+
+        input[type="file"] {
+            padding: 12px;
+            background-color: transparent;
+            border: 1px dashed var(--border-color);
+            cursor: pointer;
+        }
+
+        input[type="file"]::file-selector-button {
+            background: var(--btn-gradient);
+            border: none;
+            color: var(--btn-text);
+            padding: 10px 18px;
+            border-radius: 8px;
+            margin-right: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: var(--btn-hover-gradient);
+            box-shadow: 0 2px 10px var(--primary-glow);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        select option {
+            background-color: #0d1a12;
+            color: var(--text-main);
+            padding: 10px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-analyze {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 12px;
+        }
+
+        .btn-analyze:hover {
+            background-color: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .btn-submit {
+            background: var(--btn-gradient);
+            color: var(--btn-text);
+            min-width: 220px;
+            padding: 18px 48px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .btn-submit:hover {
+            background: var(--btn-hover-gradient);
+            /* Slight lift animation and glow */
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        }
+
+        .submit-container {
+            text-align: center;
+            margin-top: 48px;
+        }
+
+        /* Result Card - Soft green card, slight blur / glass effect */
+        .result-card {
+            display: none;
+            background: var(--result-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--result-border);
+            border-radius: 12px;
+            padding: 28px;
+            margin-top: 28px;
+            text-align: center;
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .result-card.active {
+            display: block;
+        }
+
+        .result-title {
+            color: var(--text-main);
+            font-size: 1rem;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-size: 1.8rem;
+            /* Highlight result in gold */
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            background-color: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: var(--success-color);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 28px;
+            animation: fadeIn 0.5s ease;
+            font-weight: 500;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Separator */
+        .separator {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 48px 0;
+            opacity: 0.5;
+        }
+        
+        ::-webkit-calendar-picker-indicator {
+            filter: invert(1) sepia(1) saturate(5) hue-rotate(50deg);
+            opacity: 0.7;
+            cursor: pointer;
+        }
+
+        /* Modal Popup */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 10, 7, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-title {
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .modal-text {
+            color: var(--text-main);
+            font-size: 1.05rem;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .btn-modal {
+            background: var(--btn-gradient);
+            color: var(--btn-text);
+            border: none;
+            padding: 12px 36px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-modal:hover {
+            background: var(--btn-hover-gradient);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Financial Advisor Match</h1>
+        <p class="subtitle">Connect with the right financial expert based on your portfolio.</p>
+
+        <!-- STEP 1: AI Report Input -->
+        <div class="section">
+            <h2 class="section-title">Upload Your AI Portfolio Report</h2>
+            
+            <div class="form-group">
+                <label for="aiReport">Paste your report text</label>
+                <textarea id="aiReport" placeholder="Paste your AI portfolio analysis report here..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="reportFile">Or upload report file (.pdf, .txt)</label>
+                <input type="file" id="reportFile" accept=".pdf,.txt">
+            </div>
+
+            <button type="button" class="btn btn-analyze" id="analyzeBtn">Analyze Report</button>
+
+            <!-- STEP 2: Advisor Recommendation -->
+            <div class="result-card" id="resultCard">
+                <div class="result-title">Recommended Advisor Level:</div>
+                <div class="result-value" id="advisorLevel">Evaluating...</div>
+            </div>
+        </div>
+
+        <div class="separator"></div>
+
+        <!-- STEP 3 & 4: User Details Form -->
+        <div class="section">
+            <h2 class="section-title">Your Details</h2>
+            
+            <!-- Formspree Integration -->
+            <!-- Replace 'YOUR_FORM_ID' with your actual Formspree ID -->
+            <form id="advisorForm" action="https://formspree.io/f/xgongena" method="POST">
+                
+                <!-- ROW 1 -->
+                <div class="row">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required placeholder="+1 (555) 000-0000">
+                    </div>
+                </div>
+
+                <!-- ROW 2 -->
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="john@example.com">
+                </div>
+
+                <!-- ROW 3 -->
+                <div class="form-group">
+                    <label for="adviceType">Type of Advice Needed</label>
+                    <select id="adviceType" name="adviceType" required>
+                        <option value="" disabled selected>Select an option...</option>
+                        <option value="Investment Planning">Investment Planning</option>
+                        <option value="Tax Planning">Tax Planning</option>
+                        <option value="Retirement Planning">Retirement Planning</option>
+                        <option value="Portfolio Review">Portfolio Review</option>
+                    </select>
+                </div>
+
+                <!-- ROW 4 -->
+                <div class="row">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="meetingDate">Expected Meeting Date</label>
+                        <input type="date" id="meetingDate" name="meetingDate" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="meetingTime">Expected Time</label>
+                        <input type="time" id="meetingTime" name="meetingTime" required>
+                    </div>
+                </div>
+
+                <!-- ROW 5 -->
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" placeholder="Any additional requirements or specific goals?"></textarea>
+                </div>
+
+                <!-- Hidden inputs for logic/tracking -->
+                <input type="hidden" id="hiddenAdvisorLevel" name="recommendedAdvisorLevel" value="Not Analyzed">
+
+                <!-- STEP 5: Submit Button -->
+                <div class="submit-container">
+                    <button type="submit" class="btn btn-submit">Request Advisor</button>
+                </div>
+
+                <!-- Success State -->
+                <div class="success-message" id="successMessage">
+                    Your request has been submitted successfully. Our advisor will contact you soon.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <div class="modal-title">Request Submitted ✅</div>
+            <div class="modal-text">An advisor will reach you within 24 hours.</div>
+            <button class="btn-modal" id="closeModalBtn">OK</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const resultCard = document.getElementById('resultCard');
+            const advisorLevelEl = document.getElementById('advisorLevel');
+            const hiddenAdvisorLevel = document.getElementById('hiddenAdvisorLevel');
+            const advisorForm = document.getElementById('advisorForm');
+            const successMessage = document.getElementById('successMessage');
+            const successModal = document.getElementById('successModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            let redirectTimeout;
+
+            // Advisor levels for random selection
+            const levels = [
+                "Beginner Advisor",
+                "Intermediate Advisor",
+                "Expert Advisor"
+            ];
+
+            analyzeBtn.addEventListener('click', () => {
+                analyzeBtn.textContent = 'Analyzing...';
+                analyzeBtn.disabled = true;
+
+                // Simulate processing time
+                setTimeout(() => {
+                    const randomLevel = levels[Math.floor(Math.random() * levels.length)];
+                    
+                    advisorLevelEl.textContent = randomLevel;
+                    resultCard.classList.add('active');
+                    
+                    // Attach the recommended level to the form data
+                    hiddenAdvisorLevel.value = randomLevel;
+
+                    analyzeBtn.textContent = 'Re-Analyze Report';
+                    analyzeBtn.disabled = false;
+                }, 800);
+            });
+
+            // Handle Form Submission using AJAX so we can show the success message without redirecting right away
+            advisorForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const formAction = advisorForm.action;
+                const submitBtn = advisorForm.querySelector('.btn-submit');
+                
+                // If it's the placeholder form ID, just simulate submission
+                if (formAction.includes('YOUR_FORM_ID')) {
+                    submitBtn.textContent = 'Submitting...';
+                    submitBtn.disabled = true;
+
+                    setTimeout(() => {
+                        showSuccess(submitBtn);
+                    }, 1000);
+                    return;
+                }
+                
+                // Real formspree submission via AJAX
+                submitBtn.textContent = 'Submitting...';
+                submitBtn.disabled = true;
+
+                const formData = new FormData(advisorForm);
+                
+                fetch(formAction, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        showSuccess(submitBtn);
+                    } else {
+                        response.json().then(data => {
+                            if (Object.hasOwn(data, 'errors')) {
+                                alert(data["errors"].map(error => error["message"]).join(", "));
+                            } else {
+                                alert("Oops! There was a problem submitting your form");
+                            }
+                            resetBtn(submitBtn);
+                        })
+                    }
+                })
+                .catch(error => {
+                    alert("Oops! There was a problem submitting your form");
+                    resetBtn(submitBtn);
+                });
+            });
+
+            function showSuccess(btn) {
+                successMessage.classList.add('active');
+                successModal.classList.add('active');
+                
+                advisorForm.reset();
+                resultCard.classList.remove('active');
+                hiddenAdvisorLevel.value = 'Not Analyzed';
+                analyzeBtn.textContent = 'Analyze Report';
+                
+                resetBtn(btn);
+
+                // Auto redirect after 3 seconds
+                redirectTimeout = setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 3000);
+            }
+
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    clearTimeout(redirectTimeout);
+                    window.location.href = 'index.html';
+                });
+            }
+
+            function resetBtn(btn) {
+                btn.textContent = 'Request Advisor';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

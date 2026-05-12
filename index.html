@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Everyrupee.in — Make Every rupee Count</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0f0e0a;
+    --parchment: #f7f3e9;
+    --cream: #faf8f2;
+    --green: #1a6b3a;
+    --green-light: #2d9b56;
+    --green-pale: #e8f5ee;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --muted: #7a7060;
+    --border: rgba(15,14,10,0.1);
+    --shadow-sm: 0 2px 8px rgba(15,14,10,0.06);
+    --shadow-md: 0 8px 32px rgba(15,14,10,0.10);
+    --shadow-lg: 0 24px 64px rgba(15,14,10,0.14);
+  }
+
+  html { scroll-behavior: auto; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(250,248,242,0.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 1.4rem;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--green); }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+
+  .nav-cta {
+    background: var(--green);
+    color: #fff !important;
+    padding: 0.55rem 1.4rem;
+    border-radius: 100px;
+    font-weight: 500 !important;
+    transition: background 0.2s, transform 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--green-light) !important; transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  /* #hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--parchment);
+  } */
+
+  #hero {
+  /* Ensure the container is relative so children can be absolute */
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Full viewport height */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  overflow: hidden; /* Hide anything that overflows the container */
+  /* Remove any existing background-color */
+  background-color: transparent; 
+}
+
+.back-video {
+  /* Position the video at the top-left of the hero section */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  /* The magic property to make it act like a background-image */
+  object-fit: cover; 
+  
+  /* Place the video behind the text content */
+  z-index: 0;
+}
+
+  .hero-bg-text {
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(6rem, 18vw, 18rem);
+    font-weight: 900;
+    color: rgba(26,107,58,0.04);
+    white-space: nowrap;
+    user-select: none;
+    pointer-events: none;
+    letter-spacing: -0.04em;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 780px;
+    padding: 0 2rem;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--green-pale);
+    color: var(--green);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 6vw, 5.2rem);
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.4rem;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--green);
+  }
+
+  .hero-sub {
+    font-weight: 500;
+    font-size: 1.05rem;
+    /* color: var(--muted); */
+    color: rgba(0,0,0,0.6);
+    max-width: 520px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--green);
+    color: #fff;
+    padding: 0.9rem 2.2rem;
+    border-radius: 100px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(26,107,58,0.3);
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover {
+    background: var(--green-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(26,107,58,0.38);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    padding: 0.9rem 2.2rem;
+    border-radius: 100px;
+    font-size: 0.95rem;
+    font-weight: 400;
+    text-decoration: none;
+    border: 1.5px solid var(--border);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--ink); transform: translateY(-2px); }
+
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--muted), transparent);
+    animation: scrollPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.6); transform-origin: top; }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* ── VIDEO SCROLL SECTION ── */
+  #video-scroll-section {
+    position: relative;
+    height: 500vh; /* controls scroll duration */
+  }
+
+  .video-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--ink);
+  }
+
+  .video-overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .video-overlay-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-style: italic;
+    color: #fff;
+    text-shadow: 0 4px 24px rgba(0,0,0,0.6);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .video-overlay-text p {
+    margin-top: 0.8rem;
+    font-size: clamp(0.85rem, 1.5vw, 1rem);
+    color: rgba(0,0,0,0.9);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 900;
+  }
+
+  .change-colour {
+    color: rgb(99, 231, 48);
+  }
+
+  #bill-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    will-change: transform;
+  }
+
+  .video-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--gold), var(--gold-light));
+    width: 0%;
+    transition: none;
+    z-index: 20;
+    box-shadow: 0 0 8px var(--gold);
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    padding: 6rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ── STATS BAND ── */
+  .stats-band {
+    background: var(--green);
+    padding: 4rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .stat-item { color: #fff; }
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    display: block;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── FEATURES ── */
+  #features {
+    padding: 8rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 1.2rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    max-width: 600px;
+    margin-bottom: 4rem;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .feature-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.2rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--green), var(--gold));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    background: var(--green-pale);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.4rem;
+    font-size: 1.4rem;
+  }
+
+  .feature-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-card p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  /* ── AGE PLANNER ── */
+  #age-planner {
+    background: var(--parchment);
+    padding: 8rem 4rem;
+  }
+
+  .age-planner-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .age-timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+  .age-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--green), var(--gold), transparent);
+    border-radius: 2px;
+  }
+
+  .age-step {
+    position: relative;
+    padding: 0 0 2.5rem 2rem;
+  }
+  .age-step::before {
+    content: '';
+    position: absolute;
+    left: -2.45rem; top: 0.3rem;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--green);
+    border: 2px solid var(--cream);
+    box-shadow: 0 0 0 3px rgba(26,107,58,0.15);
+  }
+
+  .age-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--green);
+    margin-bottom: 0.4rem;
+    display: block;
+    font-weight: 500;
+  }
+
+  .age-step h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .age-step p {
+    font-size: 0.87rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── CTA ── */
+  #cta {
+    padding: 10rem 4rem;
+    text-align: center;
+    background: var(--ink);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+   #cta::before {
+    content: '₹';
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 60vw;
+    font-weight: 900;
+    color: rgba(255,255,255,0.8);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+  } 
+
+  #cta::before {
+  content: '₹'; /* or '$' */
+  position: absolute;
+  font-family: 'Playfair Display', serif;
+  font-size: 60vw;
+  font-weight: 900;
+  color: rgba(255,255,255,0.15);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  z-index: 0;
+}
+
+  #cta .section-label { color: var(--gold); }
+
+  #cta .section-title {
+    color: #fff;
+    margin: 0 auto 2.5rem;
+  }
+
+  #cta .btn-primary {
+    background: var(--gold);
+    color: var(--ink);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+    font-weight: 600;
+  }
+  #cta .btn-primary:hover { background: var(--gold-light); }
+
+  #cta .btn-ghost {
+    color: rgba(255,255,255,0.6);
+    border-color: rgba(255,255,255,0.2);
+  }
+  #cta .btn-ghost:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #0a0906;
+    color: rgba(255,255,255,0.35);
+    padding: 3rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.82rem;
+  }
+
+  footer .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.5);
+  }
+  footer .footer-logo span { color: var(--gold); }
+
+  footer a { color: rgba(255,255,255,0.35); text-decoration: none; }
+  footer a:hover { color: rgba(255,255,255,0.6); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    #features, .section-divider { padding: 5rem 1.5rem; }
+    #age-planner { padding: 5rem 1.5rem; }
+    .age-planner-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .stats-band { padding: 3rem 2rem; }
+    #cta { padding: 7rem 1.5rem; }
+    footer { padding: 2rem 1.5rem; flex-direction: column; text-align: center; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-actions { flex-direction: column; align-items: center; }
+    .btn-primary, .btn-ghost { width: 100%; max-width: 280px; text-align: center; }
+    #video-scroll-section { height: 400vh; }
+  }
+
+  /* ── UTILS ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Every<span>Rupee</span>.in</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="planner.html">Planner</a></li>
+    <li><a href="edcuation.html">Knowledge hub</a></li>
+    <li><a href="taxassist.html" >Tax advisor</a></li>
+    <li><a href="investment.html">Investments</a></li>
+    <li><a href="financial-advisor-match.html" class="nav-cta">finhelp</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<!-- <section id="hero">
+  <div class="hero-bg-text">₹</div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Personal Finance · Made Simple</div>
+    <h1 class="hero-title">
+      Make <em>every</em><br>Rupee work<br>for you.
+    </h1>
+    <p class="hero-sub">
+      Learn how to invest smarter, spend wiser, and plan for every stage of life — with education built around real numbers.
+    </p>
+    <div class="hero-actions">
+      <a href="#features" class="btn-primary">Explore Free Lessons</a>
+      <a href="#video-scroll-section" class="btn-ghost">See How It Works ↓</a>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section> -->
+
+<!-- HERO -->
+<section id="hero">
+  <video autoplay muted loop playsinline class="back-video">
+    <source src="farzi.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="hero-bg-text">₹</div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Personal Finance • Made Simple</div>
+    <h1 class="hero-title">
+      Make <em>every</em><br>rupee work<br>for you.
+    </h1>
+    <p class="hero-sub">
+      Learn how to invest smarter, spend wiser, and plan for every stage of life — with education built around real numbers.
+    </p>
+    <div class="hero-actions">
+      <a href="#features" class="btn-primary">Explore Free Lessons</a>
+      <a href="#video-scroll-section" class="btn-ghost">See How It Works ↓</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+
+<!-- VIDEO SCROLL ANIMATION -->
+<section id="video-scroll-section">
+  <div class="video-sticky">
+    <video
+      id="bill-video"
+      src="whiskvideo.mp4"
+      muted
+      playsinline
+      preload="auto"
+    ></video>
+    <div class="video-overlay-text" id="overlay-text">
+      <h2>Is this<br>real money?</h2>
+      <p>Every dollar <span class="change-colour">has a story. Let's</span> tell yours.</p>
+    </div>
+    <div class="video-progress-bar" id="progress-bar"></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-band">
+  <div class="stat-item reveal">
+    <span class="stat-number">3.2×</span>
+    <span class="stat-label">Average wealth growth with planning</span>
+  </div>
+  <div class="stat-item reveal reveal-delay-1">
+    <span class="stat-number">₹48L</span>
+    <span class="stat-label">Median retirement gap closed</span>
+  </div>
+  <div class="stat-item reveal reveal-delay-2">
+    <span class="stat-number">12+</span>
+    <span class="stat-label">Investment strategies covered</span>
+  </div>
+  <div class="stat-item reveal reveal-delay-3">
+    <span class="stat-number">100%</span>
+    <span class="stat-label">Free for individuals</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <p class="section-label reveal">What We Cover</p>
+  <h2 class="section-title reveal reveal-delay-1">
+    Financial clarity for every chapter of life.
+  </h2>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">📈</div>
+      <h3>Investment Strategy</h3>
+      <p>Understand equity, debt, mutual funds, SIPs, and REITs — with plain-language guides calibrated to your risk tolerance and timeline.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon">🧮</div>
+      <h3>Budget Architecture</h3>
+      <p>Build a personal budget that breathes with your income. Learn the 50/30/20 rule, zero-based budgeting, and when to use each.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon">🛡️</div>
+      <h3>Tax-Smart Planning</h3>
+      <p>Maximize 80C deductions, understand capital gains tax, and structure your portfolio to minimize leakage across every financial year.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-3">
+      <div class="feature-icon">🏠</div>
+      <h3>Real Estate & EMI</h3>
+      <p>Rent vs buy calculators, EMI impact analysis, and how property fits (or doesn't) into a diversified wealth plan at your life stage.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">💡</div>
+      <h3>Emergency Fund Logic</h3>
+      <p>Why 3 months isn't always enough. Learn how to size your safety net based on your industry, dependents, and risk profile.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon">🌱</div>
+      <h3>Compound Growth</h3>
+      <p>Visualize the real cost of waiting. See how starting at 22 vs 32 changes your retirement corpus by 400% — with live calculators.</p>
+    </div>
+  </div>
+</section>
+
+<!-- AGE PLANNER -->
+<section id="age-planner">
+  <div class="age-planner-inner">
+    <div>
+      <p class="section-label reveal">Plan by Age</p>
+      <h2 class="section-title reveal reveal-delay-1">
+        The right move depends on where you are.
+      </h2>
+      <p class="reveal reveal-delay-2" style="color: var(--muted); font-size: 0.95rem; line-height: 1.75; max-width: 400px;">
+        Generic advice fails because life isn't generic. EveryDollar.in gives you age-tuned frameworks, not one-size-fits-all rules.
+      </p>
+      <a href="#cta" class="btn-primary reveal reveal-delay-3" style="display:inline-block; margin-top: 2rem;">Find My Plan</a>
+    </div>
+    <div class="age-timeline">
+      <div class="age-step reveal">
+        <span class="age-tag">20s — Foundation</span>
+        <h4>Build the habit, not the corpus</h4>
+        <p>Start a SIP, open a PPF, get term insurance. Keep expenses low, learn to invest, and let compounding begin its quiet magic.</p>
+      </div>
+      <div class="age-step reveal reveal-delay-1">
+        <span class="age-tag">30s — Acceleration</span>
+        <h4>Scale what's working</h4>
+        <p>Increase SIP by 10% yearly. Reassess your portfolio. Start a child education fund. Buy health insurance before premiums spike.</p>
+      </div>
+      <div class="age-step reveal reveal-delay-2">
+        <span class="age-tag">40s — Consolidation</span>
+        <h4>Protect & preserve</h4>
+        <p>Shift allocation toward stability. Prepay high-interest debt. Set a concrete retirement number and reverse-engineer it monthly.</p>
+      </div>
+      <div class="age-step reveal reveal-delay-3">
+        <span class="age-tag">50s+ — Freedom</span>
+        <h4>Draw down with precision</h4>
+        <p>Optimize withdrawal strategy, minimize tax on corpus, plan legacy, and make sure your money outlives your needs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <p class="section-label reveal">Begin Today</p>
+  <h2 class="section-title reveal reveal-delay-1" style="font-size: clamp(2.2rem, 5vw, 3.8rem);">
+    Your financial future starts with one honest question.
+  </h2>
+  <div class="hero-actions reveal reveal-delay-2">
+    <a href="#" class="btn-primary">Start Learning Free</a>
+    <a href="#features" class="btn-ghost">Browse Topics</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Every<span>Rupee</span>.in</div>
+  <div>Personal finance education for every stage of life.</div>
+  <div>
+    <a href="#">Privacy</a> &nbsp;·&nbsp;
+    <a href="#">Terms</a> &nbsp;·&nbsp;
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── REGISTER SCROLLTRIGGER ── */
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ── VIDEO SCROLL SCRUBBING ── */
+  const video = document.getElementById('bill-video');
+  const overlayText = document.getElementById('overlay-text');
+  const progressBar = document.getElementById('progress-bar');
+
+  // Wait for video metadata before attaching ScrollTrigger
+  function initVideoScrub() {
+    const duration = video.duration;
+    if (!duration || isNaN(duration)) return;
+
+    // Proxy object that GSAP tweens — we'll map .t → video.currentTime
+    const proxy = { t: 0 };
+
+    ScrollTrigger.create({
+      trigger: '#video-scroll-section',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.6,           // lower = faster response; 0.6 balances feel & smoothness
+      onUpdate(self) {
+        const progress = self.progress;
+
+        // Smooth video seek
+        const targetTime = progress * duration;
+        // Clamp to valid range
+        const clamped = Math.max(0, Math.min(duration, targetTime));
+        video.currentTime = clamped;
+
+        // Progress bar
+        progressBar.style.width = (progress * 100) + '%';
+
+        // Overlay text: fade in from 40%–70% scroll progress
+        const textProgress = Math.max(0, Math.min(1, (progress - 0.4) / 0.3));
+        overlayText.style.opacity = textProgress;
+        overlayText.style.transform = `translate(-50%, calc(-50% + ${(1 - textProgress) * 20}px))`;
+      }
+    });
+  }
+
+  if (video.readyState >= 1) {
+    initVideoScrub();
+  } else {
+    video.addEventListener('loadedmetadata', initVideoScrub, { once: true });
+  }
+
+  // Ensure video frames are ready immediately on first paint
+  video.addEventListener('canplay', () => {
+    video.pause(); // keep paused; scroll drives playback
+  });
+
+  /* ── INTERSECTION OBSERVER for REVEAL ── */
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+  revealEls.forEach(el => io.observe(el));
+
+  /* ── HERO PARALLAX ── */
+  const heroBg = document.querySelector('.hero-bg-text');
+  if (heroBg) {
+    ScrollTrigger.create({
+      trigger: '#hero',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: true,
+      onUpdate(self) {
+        heroBg.style.transform = `translateY(${self.progress * 80}px)`;
+      }
+    });
+  }
+
+  /* ── NAV SHADOW ON SCROLL ── */
+  const navEl = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    navEl.style.boxShadow = window.scrollY > 10 ? '0 2px 24px rgba(15,14,10,0.1)' : 'none';
+  }, { passive: true });
+
+})();
+</script>
+</body>
+</html>

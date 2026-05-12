@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financial Planner — EveryRupee</title>
+  <meta name="description" content="Get a personalized AI-powered financial plan in minutes. Enter your income, goals, and risk tolerance." />
+  <link rel="stylesheet" href="planner.css" />
+</head>
+<body>
+
+<!-- ══════════════════════════════════ NAV ══════════════════════════════════ -->
+<nav class="er-nav">
+  <a href="index.html" class="er-nav__logo">Every<span>Rupee</span></a>
+  <ul class="er-nav__links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="planner.html" class="active">Planner</a></li>
+    <li><a href="edcuation.html">Knowledge hub</a></li>
+    <li><a href="taxassist.html" >Tax advisor</a></li>
+    <li><a href="investment.html">investments</a></li>
+    <li><a href="financial-advisor-match.html"class="er-nav__cta">finhelp</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════════════════════════ HERO ══════════════════════════════════ -->
+<section class="page-hero">
+  <div class="page-hero__eyebrow">
+    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+    </svg>
+    AI Financial Planner · Free · No Sign-up
+  </div>
+  <h1 class="page-hero__title">
+    Your personal<br><em>wealth blueprint</em><br>in 5 steps
+  </h1>
+  <p class="page-hero__subtitle">
+    Answer a few simple questions. Get a data-driven investment plan tailored to your income, goals, and risk appetite — completely free.
+  </p>
+
+  <!-- Trust strip -->
+  <div class="trust-strip" style="justify-content:center; margin-top: 28px; gap: 24px;">
+    <div class="trust-badge">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      Never stores passwords
+    </div>
+    <div class="trust-badge">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      Bank-grade security
+    </div>
+    <div class="trust-badge">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Not investment advice
+    </div>
+  </div>
+</section>
+
+<hr class="divider" style="max-width:900px; margin: 0 auto 48px;" />
+
+<!-- ══════════════════════════════════ WIZARD ══════════════════════════════════ -->
+<main class="wizard">
+  <!-- Progress bar -->
+  <div class="wizard-progress" style="margin-bottom: 12px;">
+    <div class="progress-bar">
+      <div class="progress-bar__fill" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <!-- Step indicators -->
+  <div class="wizard__steps-indicator">
+    <div class="step-indicator">
+      <div class="step-indicator__dot" onclick="goToStep(1)">1</div>
+    </div>
+    <div class="step-indicator__line"></div>
+    <div class="step-indicator">
+      <div class="step-indicator__dot" onclick="goToStep(2)">2</div>
+    </div>
+    <div class="step-indicator__line"></div>
+    <div class="step-indicator">
+      <div class="step-indicator__dot" onclick="goToStep(3)">3</div>
+    </div>
+    <div class="step-indicator__line"></div>
+    <div class="step-indicator">
+      <div class="step-indicator__dot" onclick="goToStep(4)">4</div>
+    </div>
+    <div class="step-indicator__line"></div>
+    <div class="step-indicator">
+      <div class="step-indicator__dot" onclick="goToStep(5)">5</div>
+    </div>
+  </div>
+
+  <!-- Encouragement banner -->
+  <div class="encouragement">
+    <span>🌱</span>
+    <span>Great start! Knowing your income is the first step to financial freedom.</span>
+  </div>
+
+  <!-- ── STEP 1: INCOME ── -->
+  <div id="step-1" class="step-panel active">
+    <div class="step-panel__header">
+      <div class="step-panel__num">Step 1 of 5</div>
+      <h2 class="step-panel__title">Let's start with<br>your income</h2>
+      <p class="step-panel__desc">This helps us understand your earning capacity and starting point.</p>
+    </div>
+    <div class="step-panel__card">
+      <div class="form-grid-2">
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label class="form-label" for="input-name">Your first name <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+          <input id="input-name" class="form-input" type="text" placeholder="e.g., Priya" autocomplete="given-name" />
+          <span class="form-hint">We'll use this to personalize your plan</span>
+        </div>
+
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label class="form-label" for="input-income">Monthly take-home income <span class="required">*</span></label>
+          <div class="input-prefix" data-prefix="₹">
+            <input id="input-income" class="form-input" type="number" placeholder="e.g., 60000" min="0" />
+          </div>
+          <div id="income-display" style="font-size:0.85rem; font-weight:600; color:var(--green-600); margin-top:4px; min-height:20px;"></div>
+          <span class="form-hint">Enter your salary or business income after tax. All data stays in your browser — we never store it.</span>
+        </div>
+      </div>
+
+      <div style="background:var(--gold-50); border:1px solid var(--gold-100); border-radius:var(--radius-md); padding:14px 16px; font-size:0.82rem; color:var(--gold-700);">
+        💡 <strong>Why income matters:</strong> It determines how much you can realistically invest. Even ₹500/month invested early can grow to lakhs over time — the most important thing is to <em>start</em>.
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <div></div>
+      <button class="btn btn-primary" onclick="nextStep()">
+        Continue
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: EXPENSES ── -->
+  <div id="step-2" class="step-panel">
+    <div class="step-panel__header">
+      <div class="step-panel__num">Step 2 of 5</div>
+      <h2 class="step-panel__title">Monthly expenses<br>& existing investments</h2>
+      <p class="step-panel__desc">Understanding where your money goes helps identify your true investment potential.</p>
+    </div>
+    <div class="step-panel__card">
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label" for="input-expenses">Fixed monthly expenses <span class="required">*</span></label>
+          <div class="input-prefix" data-prefix="₹">
+            <input id="input-expenses" class="form-input" type="number" placeholder="e.g., 25000" min="0" />
+          </div>
+          <span class="form-hint">Rent, food, utilities, subscriptions</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-investments">Existing investments</label>
+          <div class="input-prefix" data-prefix="₹">
+            <input id="input-investments" class="form-input" type="number" placeholder="e.g., 5000" min="0" />
+          </div>
+          <span class="form-hint">SIPs, RD, PPF already active/month</span>
+        </div>
+      </div>
+
+      <div style="background:var(--green-50); border:1px solid var(--green-100); border-radius:var(--radius-md); padding:14px 16px; font-size:0.82rem; color:var(--text-secondary); margin-top:4px;">
+        🎯 <strong>The 50-30-20 rule:</strong> 50% needs · 30% wants · 20% savings & investments. We'll use your numbers to check how you're tracking.
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-ghost" onclick="prevStep()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"/></svg>
+        Back
+      </button>
+      <button class="btn btn-primary" onclick="nextStep()">
+        Continue
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: DEBT ── -->
+  <div id="step-3" class="step-panel">
+    <div class="step-panel__header">
+      <div class="step-panel__num">Step 3 of 5</div>
+      <h2 class="step-panel__title">Any outstanding<br>debt or loans?</h2>
+      <p class="step-panel__desc">Debt affects your investable surplus. Honesty here gives you a more accurate plan.</p>
+    </div>
+    <div class="step-panel__card">
+      <div class="form-group">
+        <label class="form-label" for="input-debt">Total outstanding debt <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+        <div class="input-prefix" data-prefix="₹">
+          <input id="input-debt" class="form-input" type="number" placeholder="e.g., 200000" min="0" />
+        </div>
+        <span class="form-hint">Home loan, personal loan, credit card outstanding, education loan</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Debt type</label>
+        <select class="form-select" id="input-debt-type">
+          <option value="none">No debt / prefer not to say</option>
+          <option value="home">Home Loan (low interest — keep it)</option>
+          <option value="personal">Personal Loan (medium priority to clear)</option>
+          <option value="credit">Credit Card Outstanding (clear immediately!)</option>
+          <option value="education">Education Loan (tax-deductible)</option>
+        </select>
+      </div>
+
+      <div style="background:#fff8f0; border:1px solid #f5d5aa; border-left:4px solid #e07c24; border-radius:var(--radius-md); padding:14px 16px; font-size:0.82rem; color:#7a3800;">
+        ⚠️ <strong>Credit card debt at 36–42% interest</strong> costs more than any investment earns. Clearing it first is mathematically your best "investment" — our plan will prioritize this.
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-ghost" onclick="prevStep()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"/></svg>
+        Back
+      </button>
+      <button class="btn btn-primary" onclick="nextStep()">
+        Continue
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: GOALS ── -->
+  <div id="step-4" class="step-panel">
+    <div class="step-panel__header">
+      <div class="step-panel__num">Step 4 of 5</div>
+      <h2 class="step-panel__title">What are you<br>investing <em>for</em>?</h2>
+      <p class="step-panel__desc">Select all that apply. Your goals shape your investment timeline and strategy.</p>
+    </div>
+    <div class="step-panel__card">
+      <div class="goal-options">
+        <label class="goal-option" data-goal="retirement">
+          <input type="checkbox" value="retirement" />
+          <span class="goal-option__icon">🏖️</span>
+          <div>
+            <div class="goal-option__label">Retirement Corpus</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Long-term security</div>
+          </div>
+        </label>
+
+        <label class="goal-option" data-goal="home">
+          <input type="checkbox" value="home" />
+          <span class="goal-option__icon">🏠</span>
+          <div>
+            <div class="goal-option__label">Buy a Home</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Down payment / own flat</div>
+          </div>
+        </label>
+
+        <label class="goal-option" data-goal="emergency">
+          <input type="checkbox" value="emergency" />
+          <span class="goal-option__icon">🛡️</span>
+          <div>
+            <div class="goal-option__label">Emergency Fund</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">6 months of expenses</div>
+          </div>
+        </label>
+
+        <label class="goal-option" data-goal="wealth">
+          <input type="checkbox" value="wealth" />
+          <span class="goal-option__icon">📈</span>
+          <div>
+            <div class="goal-option__label">Wealth Growth</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Beat inflation, build wealth</div>
+          </div>
+        </label>
+
+        <label class="goal-option" data-goal="education">
+          <input type="checkbox" value="education" />
+          <span class="goal-option__icon">🎓</span>
+          <div>
+            <div class="goal-option__label">Child's Education</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Future-proof their start</div>
+          </div>
+        </label>
+
+        <label class="goal-option" data-goal="travel">
+          <input type="checkbox" value="travel" />
+          <span class="goal-option__icon">✈️</span>
+          <div>
+            <div class="goal-option__label">Travel / Experiences</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Short-to-medium horizon</div>
+          </div>
+        </label>
+      </div>
+
+      <div style="margin-top:20px;" class="form-group">
+        <label class="form-label" for="input-custom-goal">Custom goal <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+        <input id="input-custom-goal" class="form-input" type="text" placeholder="e.g., Start a business in 3 years" />
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-ghost" onclick="prevStep()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"/></svg>
+        Back
+      </button>
+      <button class="btn btn-primary" onclick="nextStep()">
+        Almost there!
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── STEP 5: RISK PROFILE ── -->
+  <div id="step-5" class="step-panel">
+    <div class="step-panel__header">
+      <div class="step-panel__num">Step 5 of 5</div>
+      <h2 class="step-panel__title">Your risk<br>comfort level</h2>
+      <p class="step-panel__desc">Higher risk = higher potential return, but more short-term volatility. There's no right answer.</p>
+    </div>
+    <div class="step-panel__card">
+      <div class="risk-options">
+        <label class="risk-option" data-risk="conservative">
+          <input type="radio" name="risk" value="conservative" />
+          <div class="risk-option__icon">🛡️</div>
+          <div class="risk-option__label">Conservative</div>
+          <div class="risk-option__desc">Capital preservation matters more than growth. Happy with 7–9%.</div>
+        </label>
+
+        <label class="risk-option selected" data-risk="moderate">
+          <input type="radio" name="risk" value="moderate" checked />
+          <div class="risk-option__icon">⚖️</div>
+          <div class="risk-option__label">Moderate</div>
+          <div class="risk-option__desc">Balanced approach. Can handle some dips. Targeting 10–14%.</div>
+        </label>
+
+        <label class="risk-option" data-risk="aggressive">
+          <input type="radio" name="risk" value="aggressive" />
+          <div class="risk-option__icon">🚀</div>
+          <div class="risk-option__label">Aggressive</div>
+          <div class="risk-option__desc">Focused on maximizing long-term wealth. Can stomach 30% drops.</div>
+        </label>
+      </div>
+
+      <div style="margin-top:28px; padding:16px; background:var(--cream-200); border-radius:var(--radius-md); font-size:0.82rem; color:var(--text-secondary);">
+        🔍 <strong>Not sure?</strong> Start with Moderate. You can always adjust as you learn more. The most important thing is to begin — not to pick the "perfect" option.
+      </div>
+
+      <div style="margin-top:20px;" class="form-group">
+        <label class="form-label" for="input-horizon">Investment time horizon</label>
+        <select class="form-select" id="input-horizon">
+          <option value="short">Short-term: 1–3 years</option>
+          <option value="medium" selected>Medium-term: 3–7 years</option>
+          <option value="long">Long-term: 7–15 years</option>
+          <option value="retirement">Retirement: 15+ years</option>
+        </select>
+        <span class="form-hint">Longer horizon = more time for compounding to work its magic</span>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-ghost" onclick="prevStep()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"/></svg>
+        Back
+      </button>
+      <button class="btn btn-gold btn-lg" onclick="nextStep()">
+        ✨ Generate My Plan
+      </button>
+    </div>
+  </div>
+</main>
+
+<!-- ══════════════════════════════════ DASHBOARD ══════════════════════════════════ -->
+<div class="dashboard">
+
+  <!-- Dashboard header -->
+  <div class="dashboard__header reveal">
+    <div class="dashboard__greeting">Your Personalized Financial Blueprint</div>
+    <h2 class="dashboard__title">
+      Based on your income of <span id="dash-income">—</span>,<br>
+      here's your <span id="dash-risk">Moderate</span> growth plan, <span id="dash-name">Friend</span>
+    </h2>
+    <p class="dashboard__subtitle">Generated using your inputs. Scroll down to explore each investment in detail.</p>
+
+    <!-- Trust reassurance -->
+    <div class="trust-strip" style="margin-top:16px;">
+      <div class="trust-badge">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        Your data never leaves this browser
+      </div>
+      <div class="trust-badge">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        For educational purposes · Not SEBI advice
+      </div>
+    </div>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="dashboard-grid-3" style="margin-bottom: 32px;">
+    <div class="stat-card reveal">
+      <div class="stat-card__label">Disposable Income</div>
+      <div class="stat-card__value" id="stat-disposable">—</div>
+      <div class="stat-card__sub">After expenses & debt EMI</div>
+    </div>
+    <div class="stat-card reveal reveal-delay-1">
+      <div class="stat-card__label">Recommended to Invest</div>
+      <div class="stat-card__value stat-card__value--gold" id="stat-investable">—</div>
+      <div class="stat-card__sub">~70% of disposable income</div>
+    </div>
+    <div class="stat-card reveal reveal-delay-2">
+      <div class="stat-card__label">Projected Corpus (10 Yrs)</div>
+      <div class="stat-card__value" id="stat-corpus-10yr">—</div>
+      <div class="stat-card__sub">At current investment rate</div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="dashboard-grid" style="margin-bottom: 32px;">
+    <!-- Pie chart -->
+    <div class="chart-card reveal">
+      <div class="chart-card__title">Asset Allocation</div>
+      <div class="chart-card__subtitle">Recommended portfolio mix for your risk profile</div>
+      <div class="pie-chart-container">
+        <canvas id="pie-canvas" width="200" height="200" style="width:200px;height:200px;flex-shrink:0;"></canvas>
+        <div class="pie-legend" id="pie-legend"></div>
+      </div>
+    </div>
+
+    <!-- Projection chart -->
+    <div class="chart-card reveal reveal-delay-1">
+      <div class="chart-card__title">Wealth Projection</div>
+      <div class="chart-card__subtitle">Projected corpus growth over time (SIP at recommended amount)</div>
+      <div class="chart-wrapper">
+        <div id="proj-bars" class="proj-bars" style="height:180px; padding:24px 0 0;"></div>
+        <div style="display:flex; gap:16px; margin-top:12px; font-size:0.78rem; color:var(--text-muted);">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:14px;height:14px;border-radius:3px;background:var(--gold-400);"></div>
+            Projected corpus
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Investment cards section -->
+  <div class="reveal" style="margin-bottom: 24px;">
+    <h3 class="section-title" style="font-size:1.6rem;">Recommended Instruments</h3>
+    <p class="section-subtitle">Click any card to see step-by-step how to invest, required documents, tax details, and fraud red flags.</p>
+  </div>
+
+  <div id="investment-cards" class="investment-cards reveal"></div>
+
+  <!-- Start over -->
+  <div style="text-align:center; margin-top: 60px; padding: 48px; background:var(--green-50); border-radius:var(--radius-xl); border:1px solid var(--green-100);">
+    <div style="font-family:var(--font-display); font-size:1.6rem; font-weight:700; color:var(--green-900); margin-bottom:12px; letter-spacing:-0.02em;">
+      Ready to take the first step?
+    </div>
+    <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:28px; max-width:480px; margin-left:auto; margin-right:auto;">
+      Start with even one instrument from your plan. The best time to invest was yesterday — the second best time is now.
+    </p>
+    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+      <a href="education.html" class="btn btn-primary">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        Learn More
+      </a>
+      <button class="btn btn-outline" onclick="location.reload()">
+        Recalculate Plan
+      </button>
+    </div>
+  </div>
+
+</div>
+<!-- /dashboard -->
+
+<!-- ══════════════════════════════════ FOOTER ══════════════════════════════════ -->
+<footer class="er-footer">
+  <div class="er-footer__logo">Every<span>Rupee</span></div>
+  <p class="er-footer__tagline">Democratizing financial literacy, one rupee at a time.</p>
+  <p class="er-footer__disclaimer">
+    EveryRupee is an educational tool only. Nothing on this site constitutes investment advice, tax advice, or recommendation to buy/sell any financial product. All projections are illustrative. Past performance is not indicative of future returns. Please consult a SEBI-registered advisor before making investment decisions.
+  </p>
+</footer>
+<script src="planner.js"></script>
+
+<!-- FIX: Prevent auto scroll -->
+<script>
+  // Disable the window.scrollTo() trigger inside renderStep() from planner.js
+  if (typeof renderStep === 'function') {
+    const originalRenderStep = renderStep;
+    renderStep = function() {
+      const originalScrollTo = window.scrollTo;
+      window.scrollTo = function() {}; // Prevent scroll jump
+      originalRenderStep();
+      window.scrollTo = originalScrollTo; // Restore normal scrolling
+    };
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EveryRupee · Planner Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ============================================
+       EVERYRUPE DESIGN TOKENS
+    ============================================ */
+    :root {
+      --bg:           #F0EDE4;
+      --bg-card:      #FFFFFF;
+      --green-deep:   #1C3829;
+      --green-mid:    #2A5240;
+      --green-light:  #E8F0EB;
+      --gold:         #C9973B;
+      --gold-light:   #F5E8CE;
+      --text:         #1C3829;
+      --text-muted:   #6B7280;
+      --border:       rgba(28, 56, 41, 0.12);
+      --shadow-sm:    0 1px 4px rgba(28,56,41,0.08);
+      --shadow-md:    0 4px 20px rgba(28,56,41,0.10);
+      --shadow-lg:    0 8px 40px rgba(28,56,41,0.12);
+      --radius-sm:    8px;
+      --radius-md:    14px;
+      --radius-lg:    22px;
+      --radius-pill:  999px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ============================================
+       NAVBAR (exact match)
+    ============================================ */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+    .navbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .brand span:first-child { color: var(--green-deep); }
+    .brand span:last-child  { color: var(--gold); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--green-deep); }
+    .nav-links a.active {
+      font-weight: 600;
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 2px;
+    }
+    .btn-pill {
+      background: var(--green-deep);
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: var(--radius-pill);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+    .btn-pill:hover { background: var(--green-mid); transform: translateY(-1px); }
+
+    /* ============================================
+       PAGE CONTAINER
+    ============================================ */
+    .page-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    /* ============================================
+       PAGE HEADER
+    ============================================ */
+    .page-header {
+      margin-bottom: 48px;
+    }
+    .page-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 5px 14px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      background: var(--bg);
+    }
+    .page-badge svg { color: var(--gold); }
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--green-deep);
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .page-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .page-subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 520px;
+    }
+
+    /* ============================================
+       CARD COMPONENT
+    ============================================ */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: 32px;
+      margin-bottom: 28px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .card-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-sm);
+      background: var(--green-light);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .card-icon svg { color: var(--green-deep); }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--green-deep);
+    }
+    .card-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ============================================
+       UPLOAD CARD
+    ============================================ */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-md);
+      padding: 52px 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s;
+      background: var(--bg);
+      position: relative;
+    }
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: var(--gold);
+      background: var(--gold-light);
+    }
+    .upload-zone input[type="file"] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer;
+      width: 100%; height: 100%;
+    }
+    .upload-icon {
+      width: 52px; height: 52px;
+      background: var(--green-light);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .upload-title {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--green-deep);
+      margin-bottom: 6px;
+    }
+    .upload-hint {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1.5px solid var(--green-deep);
+      color: var(--green-deep);
+      background: transparent;
+      padding: 9px 20px;
+      border-radius: var(--radius-pill);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover {
+      background: var(--green-deep);
+      color: #fff;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green-deep);
+      color: #fff;
+      border: none;
+      padding: 11px 28px;
+      border-radius: var(--radius-pill);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { background: var(--green-mid); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-gold {
+      background: var(--gold);
+      color: #fff;
+      border: none;
+      padding: 11px 28px;
+      border-radius: var(--radius-pill);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-gold:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ============================================
+       METRIC CARDS (DASHBOARD)
+    ============================================ */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .metric-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+    .metric-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .metric-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--green-deep);
+    }
+    .metric-value.gold { color: var(--gold); }
+    .metric-delta {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .metric-delta.up { color: #2D9E6B; }
+    .metric-delta.down { color: #E05252; }
+
+    /* ============================================
+       CHARTS (UPDATED FOR PREMIUM LOOK)
+    ============================================ */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px; /* Increased gap for better breathing room */
+      margin-top: 16px;
+    }
+    .chart-wrap {
+      background: #FAFAF8; /* Soft, luxurious off-white */
+      border: 1px solid rgba(28, 56, 41, 0.05); /* Extremely subtle border */
+      border-radius: var(--radius-lg); /* Softer, rounder corners */
+      padding: 32px 24px; /* Increased padding shrinks the chart visually */
+      box-shadow: 0 10px 30px rgba(28, 56, 41, 0.04); /* Elegant, airy shadow */
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Centers the chart perfectly */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .chart-wrap:hover {
+      transform: translateY(-2px); /* Subtle premium interaction */
+      box-shadow: 0 14px 40px rgba(28, 56, 41, 0.06);
+    }
+    .chart-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--green-deep);
+      margin-bottom: 24px;
+      letter-spacing: 0.12em; /* High tracking for elegant typography */
+      text-transform: uppercase;
+      text-align: center;
+      width: 100%;
+    }
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      max-width: 320px; /* Restricts the chart from getting overwhelmingly large */
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    canvas {
+      max-width: 100%;
+      height: auto !important; /* Forces Chart.js to respect container proportions */
+    }
+
+    /* ============================================
+       TABLE
+    ============================================ */
+    .table-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 9px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-pill);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--gold); }
+    .select-input {
+      padding: 9px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-pill);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      cursor: pointer;
+    }
+    .table-wrap { overflow-x: auto; border-radius: var(--radius-md); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    thead th {
+      background: var(--green-deep);
+      color: #fff;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    thead th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+    thead th:last-child  { border-radius: 0 var(--radius-sm) 0 0; }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    tbody tr:hover { background: var(--green-light); }
+    tbody td {
+      padding: 12px 16px;
+      color: var(--text);
+    }
+    tbody td input[type="text"],
+    tbody td input[type="number"] {
+      border: 1px solid transparent;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text);
+      width: 100%;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    tbody td input:focus {
+      border-color: var(--gold);
+      background: var(--gold-light);
+      outline: none;
+    }
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .tag-food     { background: #FEF3C7; color: #92400E; }
+    .tag-travel   { background: #DBEAFE; color: #1E40AF; }
+    .tag-shopping { background: #FCE7F3; color: #9D174D; }
+    .tag-util     { background: var(--green-light); color: var(--green-deep); }
+    .tag-health   { background: #D1FAE5; color: #065F46; }
+    .tag-other    { background: #F3F4F6; color: #374151; }
+    .amount-debit  { color: #E05252; font-weight: 600; }
+    .amount-credit { color: #2D9E6B; font-weight: 600; }
+
+    /* ============================================
+       INSIGHT BLOCKS
+    ============================================ */
+    .insights-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .insight-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      border-left: 4px solid var(--gold);
+    }
+    .insight-block.green-border { border-left-color: var(--green-deep); }
+    .insight-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .insight-label.green { color: var(--green-deep); }
+    .insight-text {
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .insight-text ul {
+      padding-left: 16px;
+      margin-top: 6px;
+    }
+    .insight-text li { margin-bottom: 6px; }
+
+    /* ============================================
+       RECOMMENDATION BLOCKS
+    ============================================ */
+    .recommendations-list { display: flex; flex-direction: column; gap: 14px; }
+    .rec-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      transition: box-shadow 0.2s;
+    }
+    .rec-block:hover { box-shadow: var(--shadow-md); }
+    .rec-number {
+      width: 30px; height: 30px;
+      background: var(--gold);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .rec-content {}
+    .rec-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--green-deep);
+      margin-bottom: 4px;
+    }
+    .rec-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* ============================================
+       SIMULATION
+    ============================================ */
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .sim-controls { display: flex; flex-direction: column; gap: 18px; }
+    .sim-field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .sim-field input[type="range"] {
+      width: 100%;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+    .sim-field .range-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--green-deep);
+      margin-top: 4px;
+    }
+    .sim-field input[type="number"] {
+      width: 100%;
+      padding: 10px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .sim-field input[type="number"]:focus { border-color: var(--gold); }
+    .sim-result {
+      background: var(--green-deep);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      color: #fff;
+    }
+    .sim-result-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 6px;
+    }
+    .sim-result-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .sim-result-value.gold-text { color: var(--gold); }
+    .sim-breakdown { display: flex; flex-direction: column; gap: 10px; }
+    .sim-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      opacity: 0.9;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .sim-row:last-child { border-bottom: none; }
+
+    /* ============================================
+       LOADING & STATES
+    ============================================ */
+    .loading-bar {
+      width: 100%; height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 16px;
+    }
+    .loading-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--green-deep));
+      border-radius: 2px;
+      animation: loadingAnim 1.5s ease-in-out infinite;
+    }
+    @keyframes loadingAnim {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .status-pill.success { background: #D1FAE5; color: #065F46; }
+    .status-pill.loading { background: var(--gold-light); color: #92400E; }
+    .status-pill.error   { background: #FEE2E2; color: #991B1B; }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .dot.pulse { animation: pulse 1.4s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .section-hidden { display: none; }
+
+    /* ============================================
+       TRUST BADGES
+    ============================================ */
+    .trust-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .trust-item svg { color: var(--green-deep); }
+
+    /* ============================================
+       RESPONSIVE
+    ============================================ */
+    @media (max-width: 768px) {
+      .page-container { padding: 28px 16px 60px; }
+      .navbar-inner { padding: 0 16px; }
+      .charts-grid { grid-template-columns: 1fr; }
+      .insights-grid { grid-template-columns: 1fr; }
+      .sim-grid { grid-template-columns: 1fr; }
+      .nav-links { gap: 18px; }
+      .page-title { font-size: 1.6rem; }
+      .card { padding: 20px; }
+    }
+    @media (max-width: 480px) {
+      .nav-links li:not(:last-child) { display: none; }
+    }
+
+    /* ============================================
+   RECONCILIATION ENGINE SPECIFICS
+============================================ */
+.recon-upload-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.split-zone {
+  padding: 24px 16px;
+}
+.recon-results-container {
+  margin-top: 24px;
+  border-top: 1px solid var(--border);
+  padding-top: 28px;
+}
+
+/* Pre-emptive Audit Dashboard */
+.risk-dashboard {
+  background: #FAFAF8; 
+  border: 1px solid rgba(201, 151, 59, 0.2); 
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: inset 0 2px 10px rgba(28, 56, 41, 0.02);
+}
+.risk-score-bar {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 16px 0 8px;
+}
+.risk-score-fill {
+  height: 100%;
+  border-radius: 4px;
+  width: 0%; /* Animates to target width via JS */
+  transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.medium-risk { background: linear-gradient(90deg, #F5E8CE, #D97706); }
+
+/* Discrepancy Cards */
+.discrepancy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.discrepancy-card {
+  display: flex;
+  gap: 16px;
+  background: var(--bg-card);
+  padding: 16px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  align-items: flex-start;
+  transition: transform 0.2s;
+}
+.discrepancy-card:hover { transform: translateX(4px); }
+.discrepancy-card.warning { border-left: 4px solid #D97706; }
+.discrepancy-card.success { border-left: 4px solid #2D9E6B; }
+
+.disc-icon {
+  margin-top: 2px;
+}
+.warning .disc-icon { color: #D97706; }
+.success .disc-icon { color: #2D9E6B; }
+
+.disc-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--green-deep);
+  margin-bottom: 4px;
+}
+.disc-text {
+  font-size: 0.85rem;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.disc-action {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #D97706;
+  background: #FEF3C7;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Animations */
+@keyframes slideDownFade {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-results {
+  animation: slideDownFade 0.6s ease forwards;
+}
+
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="/" class="brand"><span>Every</span><span>Rupee</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="planner.html" >Planner</a></li>
+        <li><a href="edcuation.html">Knowledge hub</a></li>
+        <li><a href="taxassist.html" class="active">Tax advisor</a></li>
+        <li><a href="investment.html">Investments</a></li>
+        <li><a href="financial-advisor-match.html"><button class="btn-pill">finhelp</button></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="page-container">
+
+    <div class="page-header">
+      <div class="page-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        STATEMENT ANALYSER · AI-POWERED · FREE
+      </div>
+      <h1 class="page-title">Understand your <em>spending habits</em><br/>in minutes</h1>
+      <p class="page-subtitle">Upload your bank statement, get AI-driven tax insights, investment recommendations, and simulate financial changes.</p>
+    </div>
+
+    <div class="card" id="uploadCard">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div>
+          <div class="card-title">Upload Bank Statement</div>
+          <div class="card-subtitle">CSV format · All major banks supported</div>
+        </div>
+        <div id="uploadStatus" style="margin-left:auto;"></div>
+      </div>
+
+      <div class="card" id="reconCard">
+  <div class="card-header">
+    <div class="card-icon" style="background:var(--gold-light);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" color="#C9973B"><path d="M12 3v18"/><rect x="3" y="14" width="6" height="6" rx="1"/><rect x="15" y="10" width="6" height="10" rx="1"/><path d="M9 17H3"/><path d="M21 15h-6"/></svg>
+    </div>
+    <div style="flex: 1;">
+      <div class="card-title" style="display:flex; align-items:center; gap:8px;">
+        AIS Reconciliation Engine 
+        <span style="font-size:0.65rem; background:var(--gold); color:#fff; padding:2px 8px; border-radius:var(--radius-pill); letter-spacing:0.05em;">PREMIUM</span>
+      </div>
+      <div class="card-subtitle">AI-powered comparison of your Gov. AIS vs Bank Statement</div>
+    </div>
+  </div>
+
+  <div class="recon-upload-grid" id="reconUploadSection">
+    <div class="upload-zone split-zone" id="aisDropZone">
+      <input type="file" id="aisInput" accept=".pdf" onchange="handleReconUpload('aisInput', 'aisFileName')" />
+      <div class="upload-icon" style="width:40px; height:40px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><text x="8" y="16" font-size="6" font-family="sans-serif" font-weight="bold">AIS</text></svg></div>
+      <p class="upload-title" style="font-size:0.9rem;">Upload AIS PDF</p>
+      <p class="upload-hint" id="aisFileName" style="margin-bottom:0;">Drag & drop or click</p>
+    </div>
+
+    <div class="upload-zone split-zone" id="bankPdfDropZone">
+      <input type="file" id="bankPdfInput" accept=".pdf" onchange="handleReconUpload('bankPdfInput', 'bankPdfFileName')" />
+      <div class="upload-icon" style="width:40px; height:40px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+      <p class="upload-title" style="font-size:0.9rem;">Upload Bank PDF</p>
+      <p class="upload-hint" id="bankPdfFileName" style="margin-bottom:0;">Drag & drop or click</p>
+    </div>
+  </div>
+
+  <div style="text-align: right; margin-top: 20px;">
+    <button class="btn-gold" id="runReconBtn" onclick="runReconciliation()" disabled>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Run Analysis
+    </button>
+  </div>
+
+  <div id="reconResults" class="section-hidden recon-results-container">
+    <div style="text-align:right;">
+  <span id="riskScoreText" style="font-size:1.8rem; font-weight:700; font-family:'Playfair Display', serif; color:#D97706;">Medium</span>
+</div>
+    
+    <div class="risk-dashboard">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+        <div>
+          <h4 style="color:var(--green-deep); font-family:'Playfair Display', serif; margin-bottom:4px;">Notice Risk Score</h4>
+          <p style="font-size:0.85rem; color:var(--text-muted);">Probability of drawing an IT Dept inquiry based on discrepancies.</p>
+        </div>
+        <div style="text-align:right;">
+          <span style="font-size:1.8rem; font-weight:700; font-family:'Playfair Display', serif; color:#D97706;">Medium</span>
+        </div>
+      </div>
+      <div class="risk-score-bar">
+        <div class="risk-score-fill medium-risk" id="riskFill"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase;">
+        <span>Low</span>
+        <span>Medium</span>
+        <span>High</span>
+      </div>
+    </div>
+
+    <h4 style="color:var(--green-deep); font-family:'Playfair Display', serif; margin:24px 0 12px; border-bottom:1px solid var(--border); padding-bottom:8px;">Discrepancy Detective</h4>
+    
+    <div class="discrepancy-list">
+      <div class="discrepancy-card warning">
+        <div class="disc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div class="disc-content">
+          <div class="disc-title">Interest Income Mismatch Detected</div>
+          <div class="disc-text">The government AIS reports <strong>₹12,000</strong> in savings interest, but your bank statement only shows <strong>₹8,000</strong>.</div>
+          <div class="disc-action">Possible Cause: A missing or undeclared savings account.</div>
+        </div>
+      </div>
+
+      <div class="discrepancy-card success">
+        <div class="disc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div class="disc-content">
+          <div class="disc-title">Dividend Income Verified</div>
+          <div class="disc-text">Both AIS and Bank Statement reflect exactly <strong>₹4,250</strong> in dividend payouts.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+      <div class="upload-zone" id="dropZone">
+        <input type="file" id="csvInput" accept=".csv"/>
+        <div class="upload-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" color="#1C3829"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="12" x2="12" y2="18"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        </div>
+        <p class="upload-title">Drag & drop your CSV here</p>
+        <p class="upload-hint">or click to browse · Max 5 MB · .csv only</p>
+        <button class="btn-outline" type="button" onclick="document.getElementById('csvInput').click()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Browse Files
+        </button>
+      </div>
+
+      <div id="fileInfo" style="display:none; margin-top:14px; padding:12px 16px; background:var(--green-light); border-radius:var(--radius-sm); display:none; align-items:center; justify-content:space-between;">
+        <span id="fileName" style="font-weight:600; font-size:0.875rem; color:var(--green-deep);"></span>
+        <button class="btn-primary" id="analyseBtn" onclick="analyseCSV()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Analyse Statement
+        </button>
+      </div>
+
+      <div class="trust-row">
+        <div class="trust-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Never stores passwords
+        </div>
+        <div class="trust-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Bank-grade security
+        </div>
+        <div class="trust-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Not investment advice
+        </div>
+      </div>
+    </div>
+
+    <div class="card section-hidden" id="dashboardCard">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <div>
+          <div class="card-title">Spending Dashboard</div>
+          <div class="card-subtitle">Overview of your financial activity</div>
+        </div>
+      </div>
+
+      <div class="metrics-grid" id="metricsGrid"></div>
+
+      <div class="charts-grid">
+        <div class="chart-wrap">
+          <div class="chart-label">Spending by Category</div>
+          <div class="canvas-container">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-label">Monthly Cash Flow</div>
+          <div class="canvas-container">
+            <canvas id="trendChart"></canvas>
+          </div>
+        </div>
+      </div>
+      </div>
+
+    <div class="card section-hidden" id="tableCard">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+        </div>
+        <div>
+          <div class="card-title">Transaction Ledger</div>
+          <div class="card-subtitle">Click any field to edit · Changes reflect in insights</div>
+        </div>
+      </div>
+
+      <div class="table-controls">
+        <input class="search-input" type="text" placeholder="🔍  Search transactions…" id="searchInput" oninput="filterTable()"/>
+        <select class="select-input" id="catFilter" onchange="filterTable()">
+          <option value="">All Categories</option>
+          <option value="Food">Food</option>
+          <option value="Travel">Travel</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Utilities">Utilities</option>
+          <option value="Health">Health</option>
+          <option value="Other">Other</option>
+        </select>
+        <button class="btn-outline" onclick="exportEdited()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </button>
+      </div>
+
+      <div class="table-wrap">
+        <table id="txTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Debit (₹)</th>
+              <th>Credit (₹)</th>
+              <th>Balance (₹)</th>
+            </tr>
+          </thead>
+          <tbody id="txBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card section-hidden" id="taxCard">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--gold-light);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" color="#C9973B"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div>
+          <div class="card-title">Tax Insights</div>
+          <div class="card-subtitle">AI-generated based on your transactions</div>
+        </div>
+        <button class="btn-gold" style="margin-left:auto;" onclick="fetchAIInsights('tax')" id="taxBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          Generate Insights
+        </button>
+      </div>
+      <div id="taxInsights" class="insights-grid">
+        <div class="insight-block" style="grid-column:1/-1; text-align:center; padding:32px; border-left:none; border:2px dashed var(--border);">
+          <p style="color:var(--text-muted); font-size:0.875rem;">Click <strong>Generate Insights</strong> to get AI-powered tax analysis based on your uploaded statement.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card section-hidden" id="investCard">
+      <div class="card-header">
+        <div class="card-icon" style="background:#D1FAE5;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" color="#065F46"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        <div>
+          <div class="card-title">Investment Suggestions</div>
+          <div class="card-subtitle">Personalised to your spending patterns</div>
+        </div>
+        <button class="btn-primary" style="margin-left:auto;" onclick="fetchAIInsights('invest')" id="investBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          Get Suggestions
+        </button>
+      </div>
+      <div id="investSuggestions" class="recommendations-list">
+        <div style="text-align:center; padding:32px; border:2px dashed var(--border); border-radius:var(--radius-md);">
+          <p style="color:var(--text-muted); font-size:0.875rem;">Click <strong>Get Suggestions</strong> to receive personalised investment recommendations.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card section-hidden" id="simCard">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        </div>
+        <div>
+          <div class="card-title">Financial Simulator</div>
+          <div class="card-subtitle">Tweak variables and see projected outcomes</div>
+        </div>
+      </div>
+
+      <div class="sim-grid">
+        <div class="sim-controls">
+          <div class="sim-field">
+            <label>Monthly Savings Rate</label>
+            <input type="range" id="savingsRate" min="5" max="60" value="20" oninput="updateSim()"/>
+            <div class="range-val"><span id="savingsRateVal">20</span>%</div>
+          </div>
+          <div class="sim-field">
+            <label>Monthly Investment (₹)</label>
+            <input type="number" id="monthlyInvest" value="5000" min="0" step="500" oninput="updateSim()"/>
+          </div>
+          <div class="sim-field">
+            <label>Expected Return Rate</label>
+            <input type="range" id="returnRate" min="4" max="20" value="12" oninput="updateSim()"/>
+            <div class="range-val"><span id="returnRateVal">12</span>%</div>
+          </div>
+          <div class="sim-field">
+            <label>Time Horizon (Years)</label>
+            <input type="range" id="timeHorizon" min="1" max="30" value="10" oninput="updateSim()"/>
+            <div class="range-val"><span id="timeHorizonVal">10</span> yrs</div>
+          </div>
+          <div class="sim-field">
+            <label>Reduce Discretionary Spend by (₹)</label>
+            <input type="number" id="reduceSpend" value="2000" min="0" step="500" oninput="updateSim()"/>
+          </div>
+        </div>
+
+        <div class="sim-result">
+          <div class="sim-result-label">Projected Corpus</div>
+          <div class="sim-result-value gold-text" id="simCorpus">₹11,61,695</div>
+
+          <div class="sim-result-label" style="margin-top:12px;">Wealth Gain vs Doing Nothing</div>
+          <div class="sim-result-value" id="simGain">+₹6,61,695</div>
+
+          <div class="sim-breakdown" style="margin-top:20px;">
+            <div class="sim-row"><span>Total Invested</span><span id="simInvested">₹6,00,000</span></div>
+            <div class="sim-row"><span>Interest Earned</span><span id="simInterest">₹5,61,695</span></div>
+            <div class="sim-row"><span>Monthly Savings freed up</span><span id="simFreed">₹2,000</span></div>
+            <div class="sim-row"><span>Effective Monthly Invest</span><span id="simEffective">₹7,000</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="planner-analysis.js"></script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financial Education — EveryRupee</title>
+  <meta name="description" content="Learn banking, UPI, loans, credit cards and more — explained simply for everyday Indians." />
+  <link rel="stylesheet" href="planner.css" />
+</head>
+<body>
+
+<!-- ══════════════════════════════════ NAV ══════════════════════════════════ -->
+<nav class="er-nav">
+  <a href="index.html" class="er-nav__logo">Every<span>Rupee</span></a>
+  <ul class="er-nav__links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="planner.html">Planner</a></li>
+    <li><a href="education.html" class="active">Knowledge hub</a></li>
+    <li><a href="taxassist.html" >Tax Advisor</a></li>
+    <li><a href="investment.html" >Investments</a></li>
+    <li><a href="financial-advisor-match.html"class="er-nav__cta">finhelp</a></li>
+
+  </ul>
+</nav>
+
+<!-- ══════════════════════════════════ HERO ══════════════════════════════════ -->
+<!-- <section class="page-hero page-hero--video">
+  <div class="page-hero__eyebrow">
+    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+    </svg>
+    Financial Literacy Hub · 8 Topics · Free Forever
+  </div>
+  <h1 class="page-hero__title">
+    <em>Understand money</em><br>before it disappears
+  </h1>
+  <p class="page-hero__subtitle">
+    Real explanations for real life. No jargon, no assumptions. Each topic includes examples from everyday India, fraud warnings, and a beginner mode.
+  </p> -->
+
+  <!-- Search bar -->
+  <!-- <div style="max-width:480px; margin: 28px auto 0; position:relative;">
+    <svg style="position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-muted);width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+    </svg>
+    <input id="edu-search" type="text" placeholder="Search topics… e.g. 'UPI scam', 'credit card'" 
+      class="form-input" style="padding-left:44px; border-radius:100px; font-size:0.9rem;"
+      oninput="filterTopics(this.value)" />
+  </div>
+</section> -->
+
+<section class="page-hero page-hero--video">
+  <video class="hero-video" autoplay loop muted playsinline>
+    <source src="education.mp4" type="video/mp4">
+  </video>
+
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <div class="page-hero__eyebrow">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+      </svg>
+      Financial Literacy Hub · 8 Topics · Free Forever
+    </div>
+    <h1 class="page-hero__title">
+      <em>Understand money</em><br>before it disappears
+    </h1>
+    <p class="page-hero__subtitle">
+      Real explanations for real life. No jargon, no assumptions. Each topic includes examples from everyday India, fraud warnings, and a beginner mode.
+    </p>
+
+    <div style="max-width:480px; margin: 28px auto 0; position:relative;">
+      <svg style="position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-muted);width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+      <input id="edu-search" type="text" placeholder="Search topics… e.g. 'UPI scam', 'credit card'" 
+        class="form-input" style="padding-left:44px; border-radius:100px; font-size:0.9rem;"
+        oninput="filterTopics(this.value)" />
+    </div>
+  </div>
+</section>
+
+
+<hr class="divider" style="max-width:1100px; margin: 48px auto;" />
+
+<!-- ══════════════════════════════════ MAIN CONTENT ══════════════════════════════════ -->
+<main class="section">
+
+  <!-- Tabs -->
+  <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:40px;">
+    <div class="edu-tabs">
+      <button class="edu-tab active" data-tab="online">🌐 Online Banking</button>
+      <button class="edu-tab" data-tab="offline">🏦 Offline Banking</button>
+    </div>
+    <div style="font-size:0.82rem; color:var(--text-muted);">
+      Click any card to learn in detail
+    </div>
+  </div>
+
+  <!-- ─── ONLINE BANKING TAB ─── -->
+  <div data-tab-content="online" class="edu-tab-content">
+    <div class="topic-grid" id="online-grid">
+
+      <div class="topic-card reveal" data-topic="debit" data-keywords="debit card atm pin bank swipe money">
+        <div class="topic-card__top">
+          <span class="topic-card__icon">💳</span>
+          <h3 class="topic-card__title">Debit Cards</h3>
+          <p class="topic-card__desc">Your bank account in your pocket. Learn how it works, ATM safety, and how to protect yourself from skimming fraud.</p>
+        </div>
+        <div class="topic-card__bottom">
+          <span class="topic-card__tag">Everyday</span>
+          <span class="topic-card__arrow">→</span>
+        </div>
+      </div>
+
+      <div class="topic-card reveal reveal-delay-1" data-topic="credit" data-keywords="credit card interest rewards cashback emi cibil score">
+        <div class="topic-card__top">
+          <span class="topic-card__icon">🏆</span>
+          <h3 class="topic-card__title">Credit Cards</h3>
+          <p class="topic-card__desc">Master the art of free credit, reward points, and building your CIBIL score — without falling into the interest trap.</p>
+        </div>
+        <div class="topic-card__bottom">
+          <span class="topic-card__tag">Borrow Smart</span>
+          <span class="topic-card__arrow">→</span>
+        </div>
+      </div>
+
+      <div class="topic-card reveal reveal-delay-2" data-topic="netbanking" data-keywords="net banking neft rtgs imps transfer online phishing">
+        <div class="topic-card__top">
+          <span class="topic-card__icon">💻</span>
+          <h3 class="topic-card__title">Net Banking</h3>
+          <p class="topic-card__desc">Transfer money, pay bills, and manage your account from anywhere. Plus: how to spot and avoid phishing attacks.</p>
+        </div>
+        <div class="topic-card__bottom">
+          <span class="topic-card__tag">Digital Banking</span>
+          <span class="topic-card__arrow">→</span>
+        </div>
+      </div>
+
+      <div class="topic-card reveal reveal-delay-3" data-topic="upi" data-keywords="upi gpay phonepe paytm qr scan vpa payment instant fraud">
+        <div class="topic-card__top">
+          <span class="topic-card__icon">⚡</span>
+          <h3 class="topic-card__title">UPI Payments</h3>
+          <p class="topic-card__desc">India's payment revolution explained. Learn how UPI works, the #1 scam to watch for, and safe practices.</p>
+        </div>
+        <div class="topic-card__bottom">
+          <span class="topic-card__tag">India's Best</span>
+          <span class="topic-card__arrow">→</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Quick stat banner -->
+    <div style="background:var(--surface-dark); border-radius:var(--radius-lg); padding:36px 40px; display:flex; gap:40px; flex-wrap:wrap; align-items:center; margin-top:16px;" class="reveal">
+      <div style="flex:1; min-width:200px;">
+        <div style="font-family:var(--font-display); font-size:2.4rem; font-weight:700; color:var(--text-inverse); letter-spacing:-0.03em;">₹18.4 Cr</div>
+        <div style="font-size:0.85rem; color:rgba(250,246,240,0.6); margin-top:4px;">lost to UPI fraud in India every month</div>
+      </div>
+      <div style="flex:1; min-width:200px;">
+        <div style="font-family:var(--font-display); font-size:2.4rem; font-weight:700; color:var(--gold-400); letter-spacing:-0.03em;">93%</div>
+        <div style="font-size:0.85rem; color:rgba(250,246,240,0.6); margin-top:4px;">of fraud cases involve sharing OTP or PIN</div>
+      </div>
+      <div style="flex:2; min-width:240px;">
+        <div style="font-size:1rem; color:rgba(250,246,240,0.85); font-weight:500; line-height:1.6;">
+          Knowing these four topics above could protect you from the most common financial frauds in India today.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── OFFLINE BANKING TAB ─── -->
+  <div data-tab-content="offline" class="edu-tab-content" style="display:none;">
+    <div class="topic-grid" id="offline-grid">
+
+      <div class="topic-card reveal" data-topic="cheques" data-keywords="cheque bounce section 138 crossing payment offline">
+        <div class="topic-card__top">
+          <span class="topic-card__icon">📄</span>
+          <h3 class="topic-card__title">Cheques</h3>
+          <p class="topic-card__desc">When and why cheques are still used. Understand crossing, bouncing, and why a bounced cheque can land you in court.</p>
+        </div>
+        <div class="topic-card__bottom">
+          <span class="topic-card__tag">Paper Payments</span>
+          <span class="topic-card__arrow">→</span>
+        </div>
+      </div>
+
+      <div class="topic-card reveal reveal-delay-1" data-topic="loans" data-keywords="loan home personal education cibil emi interest bank borrow">
+        <div class="topic-card__top">
+          <span class="topic-card__icon">🏦</span>
+          <h3 class="topic-card__title">Bank Loans</h3>
+          <p class="topic-card__desc">How borrowing actually works. Types of loans, how your CIBIL score affects your interest rate, and loan scam red flags.</p>
+        </div>
+        <div class="topic-card__bottom">
+          <span class="topic-card__tag">Borrow Responsibly</span>
+          <span class="topic-card__arrow">→</span>
+        </div>
+      </div>
+
+      <div class="topic-card reveal reveal-delay-2" data-topic="emi" data-keywords="emi equated monthly installment prepay amortization no cost emi">
+        <div class="topic-card__top">
+          <span class="topic-card__icon">📅</span>
+          <h3 class="topic-card__title">EMI Structure</h3>
+          <p class="topic-card__desc">The math behind monthly payments. Why "No Cost EMI" often costs more, and when to prepay versus invest.</p>
+        </div>
+        <div class="topic-card__bottom">
+          <span class="topic-card__tag">Pay Over Time</span>
+          <span class="topic-card__arrow">→</span>
+        </div>
+      </div>
+
+      <div class="topic-card reveal reveal-delay-3" data-topic="docs" data-keywords="kyc aadhaar pan documents bank account open savings verification">
+        <div class="topic-card__top">
+          <span class="topic-card__icon">📋</span>
+          <h3 class="topic-card__title">Bank Documentation</h3>
+          <p class="topic-card__desc">Everything you need to open accounts, apply for loans, and complete KYC. Plus: how scammers exploit these processes.</p>
+        </div>
+        <div class="topic-card__bottom">
+          <span class="topic-card__tag">Paperwork 101</span>
+          <span class="topic-card__arrow">→</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Key insight -->
+    <div style="background: linear-gradient(135deg, var(--green-50), var(--gold-50)); border:1px solid var(--gold-100); border-radius:var(--radius-lg); padding:36px; margin-top:16px; display:flex; gap:28px; align-items:flex-start; flex-wrap:wrap;" class="reveal">
+      <div style="font-size:2.5rem;">💡</div>
+      <div>
+        <div style="font-family:var(--font-display); font-size:1.3rem; font-weight:700; color:var(--green-900); margin-bottom:8px; letter-spacing:-0.02em;">
+          Did you know? Your CIBIL score can save you lakhs.
+        </div>
+        <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.7; max-width:560px;">
+          A CIBIL score of 750+ can reduce your home loan interest rate by 0.5–1%. On a ₹50 lakh loan over 20 years, that's a saving of <strong>₹5–10 lakh</strong>. The EMI topic above explains exactly how this works.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── GLOSSARY SECTION ── -->
+  <hr class="divider" style="margin: 64px 0;" />
+
+  <div class="reveal" style="margin-bottom:32px;">
+    <h3 class="section-title" style="font-size:1.6rem;">Quick Glossary</h3>
+    <p class="section-subtitle">Essential finance terms — plain and simple</p>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:16px;" class="reveal">
+
+    <div style="background:var(--surface-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:20px;">
+      <div style="font-weight:700; color:var(--green-800); margin-bottom:6px;">CIBIL Score</div>
+      <div style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">A 3-digit number (300–900) that tells banks how trustworthy a borrower you are. Higher = better loan rates.</div>
+    </div>
+
+    <div style="background:var(--surface-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:20px;">
+      <div style="font-weight:700; color:var(--green-800); margin-bottom:6px;">Interest Rate (p.a.)</div>
+      <div style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">"Per annum" = per year. A 12% p.a. personal loan charges 1% per month on the outstanding balance.</div>
+    </div>
+
+    <div style="background:var(--surface-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:20px;">
+      <div style="font-weight:700; color:var(--green-800); margin-bottom:6px;">IFSC Code</div>
+      <div style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">11-character bank branch identifier used for NEFT/RTGS transfers. Find it on your cheque or bank passbook.</div>
+    </div>
+
+    <div style="background:var(--surface-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:20px;">
+      <div style="font-weight:700; color:var(--green-800); margin-bottom:6px;">NPA (Non-Performing Asset)</div>
+      <div style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">A loan where repayment is overdue by 90+ days. Being labelled NPA severely damages your credit score.</div>
+    </div>
+
+    <div style="background:var(--surface-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:20px;">
+      <div style="font-weight:700; color:var(--green-800); margin-bottom:6px;">OTP (One-Time Password)</div>
+      <div style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">A 4–6 digit temporary code sent to verify transactions. NEVER share this with anyone — ever. Banks never ask for OTPs.</div>
+    </div>
+
+    <div style="background:var(--surface-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:20px;">
+      <div style="font-weight:700; color:var(--green-800); margin-bottom:6px;">Phishing</div>
+      <div style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">A scam where fraudsters impersonate banks via fake emails/SMS/calls to steal your login credentials or OTPs.</div>
+    </div>
+
+    <div style="background:var(--surface-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:20px;">
+      <div style="font-weight:700; color:var(--green-800); margin-bottom:6px;">MCLR</div>
+      <div style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">Marginal Cost of Funds based Lending Rate — the minimum rate at which banks can lend. Floating loan rates are linked to this.</div>
+    </div>
+
+    <div style="background:var(--surface-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:20px;">
+      <div style="font-weight:700; color:var(--green-800); margin-bottom:6px;">DICGC Insurance</div>
+      <div style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">Government body that insures your bank deposits up to ₹5 lakh per bank if the bank fails. Your money is protected.</div>
+    </div>
+
+  </div>
+
+  <!-- ── RESOURCES BANNER ── -->
+  <div style="margin-top:64px; background:var(--green-900); border-radius:var(--radius-xl); padding:52px 48px; text-align:center;" class="reveal">
+    <div style="font-family:var(--font-display); font-size:2rem; font-weight:700; color:var(--text-inverse); letter-spacing:-0.025em; margin-bottom:12px;">
+      Ready to put knowledge into action?
+    </div>
+    <p style="font-size:1rem; color:rgba(250,246,240,0.7); margin-bottom:32px; max-width:500px; margin-left:auto; margin-right:auto; line-height:1.7;">
+      Use the EveryRupee Planner to generate a personalized investment plan based on what you've learned here.
+    </p>
+    <a href="planner.html" class="btn btn-gold btn-lg">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+      Build My Financial Plan
+    </a>
+    <div style="margin-top:16px; font-size:0.78rem; color:rgba(250,246,240,0.4);">
+      Free · No signup · No data stored
+    </div>
+  </div>
+
+</main>
+
+<!-- ══════════════════════════════════ MODAL ══════════════════════════════════ -->
+<div id="topic-modal" class="topic-modal">
+  <div class="topic-modal__overlay"></div>
+  <div class="topic-modal__panel">
+    <button class="topic-modal__close" onclick="closeTopicModal()" aria-label="Close">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    <div class="topic-modal__content">
+      <div class="topic-modal__eyebrow" id="modal-eyebrow"></div>
+      <h2 class="topic-modal__title" id="modal-title"></h2>
+      <div class="topic-modal__tag" id="modal-tag"></div>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+</div>
+
+<span class="new1">
+  <img src="modi2.jpeg">
+  <div class="content">
+    When you merge USD flex with Indian vibes but forget to change the serial number 💀
+Bro really said: ‘Make it 100 rupees but keep the American drip and Modi Ji reading the Constitution like it’s a Wattpad plot twist’
+  </div>
+</span>
+
+<!-- ══════════════════════════════════ FOOTER ══════════════════════════════════ -->
+<footer class="er-footer">
+  <div class="er-footer__logo">Every<span>Rupee</span></div>
+  <p class="er-footer__tagline">Democratizing financial literacy, one rupee at a time.</p>
+  <p class="er-footer__disclaimer">
+    EveryRupee is an educational platform only. All information is provided for general awareness and does not constitute financial, legal, or tax advice. Always verify information with official sources (RBI, SEBI, IRDAI) before making financial decisions. Data as of 2024 — subject to regulatory changes.
+  </p>
+</footer>
+
+<script src="planner.js"></script>
+<script>
+  // Search filter
+  function filterTopics(query) {
+    const q = query.toLowerCase();
+    document.querySelectorAll('.topic-card').forEach(card => {
+      const keywords = card.dataset.keywords || '';
+      const title = card.querySelector('.topic-card__title')?.textContent.toLowerCase() || '';
+      const desc = card.querySelector('.topic-card__desc')?.textContent.toLowerCase() || '';
+      const match = !q || keywords.includes(q) || title.includes(q) || desc.includes(q);
+      card.style.display = match ? '' : 'none';
+
+      // Switch to correct tab if needed
+      if (match && q) {
+        const tabContent = card.closest('.edu-tab-content');
+        if (tabContent) {
+          const tabName = tabContent.dataset.tabContent;
+          // Show that tab
+          document.querySelectorAll('.edu-tab-content').forEach(c => c.style.display = 'none');
+          document.querySelectorAll('.edu-tab').forEach(t => t.classList.remove('active'));
+          tabContent.style.display = 'block';
+          document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
+        }
+      }
+    });
+  }
+</script>
+</body>

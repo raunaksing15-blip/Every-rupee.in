@@ -182,6 +182,7 @@
     /* Search wrapper — relative so dropdown positions correctly */
     .stock-search-wrapper {
       position: relative;
+      z-index: 500;
     }
 
     /* Search input container: holds input + spinner side-by-side */
@@ -259,15 +260,7 @@
       top: calc(100% + 4px);
       left: 0;
       right: 0;
-      background: #fff;
-      border: 1.5px solid var(--cream-300);
-      border-radius: var(--radius-md);
-      box-shadow: 0 8px 30px rgba(26,46,26,0.14);
-      z-index: 200;
-      overflow: hidden;
-      animation: suggestionDrop 0.18s ease;
-      max-height: 380px;
-      overflow-y: auto;
+      z-index: 9999;
     }
 
     /* Scrollbar styling for suggestions */

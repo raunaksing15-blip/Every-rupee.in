@@ -1,130 +1,352 @@
-<div align="center">
-
-<img width="219" height="47" alt="image" src="https://github.com/user-attachments/assets/f395168e-a00e-48f7-967c-5a8f084daf8e" />
-
 # 💰 EveryRupee – AI-Powered Personal Finance Copilot
 
-### One platform. Three financial control rooms.
+<div align="center">
 
-<br/>
+### One Platform. Three Financial Control Rooms.
 
-<img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
-<img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" />
-<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
-<img src="https://img.shields.io/badge/OCR-Recognition-5C2D91?style=for-the-badge&logo=googlelens&logoColor=white" />
-<img src="https://img.shields.io/badge/API-Connected-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
+A modern AI-powered financial ecosystem that helps individuals, businesses, and advisors manage, understand, and grow their money with confidence.
 
 </div>
 
-**EveryRupee** is a role-based fintech workspace for retail users, businesses, and advisors. It combines deterministic financial tools, Supabase-backed authentication, a FastAPI processing engine, and an educational AI sandbox inside a polished React interface.
+---
 
-Millions of individuals struggle with budgeting, savings, investment decisions, and identifying financial scams. Existing tools are often complex, generic, or not beginner-friendly. EveryRupee addresses this gap by delivering intelligent, personalized financial guidance through a clean, conversational interface.
+## 📖 Overview
 
-The platform acts as a **Financial Copilot**, enabling users to understand, manage, and grow their money with confidence. It simplifies complex financial concepts into clear, everyday language and adapts to each user’s income, goals .
+**EveryRupee** is a role-based fintech platform designed to simplify personal finance management through intelligent automation, financial planning tools, investment guidance, and AI-powered insights.
 
-<img width="1899" height="902" alt="image" src="https://github.com/user-attachments/assets/20c8d173-2f39-47d2-b0f7-20efac7d1097" />
+Millions of people struggle with budgeting, saving, investing, and identifying financial risks. Existing solutions are often complex, fragmented, or difficult for beginners to understand.
 
-**Demo video link** :- https://youtu.be/Y9z0WSJWY4s?si=jXGhDMl_M0XMZF_T
+EveryRupee bridges this gap by combining:
 
-**live link** :- https://everyrupee-psi.vercel.app/edcuation.html
+* AI-powered financial assistance
+* Smart budgeting tools
+* Business ledger management
+* Investment education
+* Personalized financial planning
 
-## 🚀 Key Features
-
-### 🧾 Business Ledger (Khatabook System)
-
-A simplified ledger system tailored for small businesses in Tier 2 and Tier 3 cities. It helps users:
-
-* Track transactions and manage cash flow
-* Handle basic tax insights
-* Monitor debt and savings efficiently
-
-### 📊 Smart Budget Management
-
-* Track income and expenses seamlessly
-* AI-driven insights to analyze spending behavior
-* Actionable recommendations for optimization
-
-### 🎯 Personalized Financial Planning
-
-* Goal-based savings and investment strategies
-* Short-term and long-term financial planning
-* Adaptive recommendations based on user profile
-
-### 📈 Beginner-Friendly Investment Guidance
-
-* Simplified explanations of stocks, mutual funds, and fixed-income options
-* Risk profiling and diversification strategies
-* No complex financial jargon
-
-### 💬 Conversational AI Interface
-
-* Real-time financial assistance via chat
-* Easy-to-understand, human-like interaction
-* Instant insights and recommendations
+into a single easy-to-use platform.
 
 ---
 
 ## 🎯 Mission
 
-EveryRupee aims to democratize financial knowledge and empower individuals to take control of their financial future. By combining AI intelligence with an intuitive user experience, the platform enables smarter decision-making and proactive financial security.
+Our mission is to democratize financial knowledge and empower users to make smarter financial decisions through accessible technology and intelligent guidance.
 
-> With EveryRupee, every rupee you earn works smarter for you.
+> "With EveryRupee, every rupee you earn works smarter for you."
 
 ---
 
-## ⚙️ Setup & Installation
+## 🚀 Key Features
 
-Follow these steps to run the project locally:
+### 🧾 Business Ledger (Khatabook System)
 
-### 1. Prerequisites
+Designed especially for small businesses and local entrepreneurs.
 
-* Install **Node.js** (v16 or above recommended)
-  Download from: [https://nodejs.org/](https://nodejs.org/)
+Features:
 
-### 2. Clone the Repository
+* Transaction tracking
+* Cash flow management
+* Debt monitoring
+* Savings tracking
+* Basic tax insights
 
-```bash
-git clone https://github.com/your-username/everyrupee.git
-cd everyrupee
+---
+
+### 📊 Smart Budget Management
+
+Track and optimize spending behavior through:
+
+* Income tracking
+* Expense categorization
+* Financial analytics
+* AI-generated spending insights
+* Budget recommendations
+
+---
+
+### 🎯 Personalized Financial Planning
+
+Create customized financial roadmaps based on:
+
+* Income
+* Age
+* Risk appetite
+* Financial goals
+* Investment preferences
+
+---
+
+### 📈 Beginner-Friendly Investment Guidance
+
+Learn investing without complicated financial jargon.
+
+Includes:
+
+* Stock market basics
+* Mutual fund education
+* Fixed income investments
+* Diversification strategies
+* Risk profiling
+
+---
+
+### 💬 Conversational AI Assistant
+
+Receive instant financial assistance through a natural language interface.
+
+Capabilities:
+
+* Financial education
+* Spending analysis
+* Goal recommendations
+* Personalized insights
+
+---
+
+## 🏗️ Project Architecture
+
+```text
+┌─────────────────┐
+│     User        │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Frontend (UI)   │
+│ HTML/CSS/JS     │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ FastAPI Backend │
+└────────┬────────┘
+         │
+         ├────────► OCR Services
+         │
+         ├────────► AI APIs
+         │
+         └────────► Supabase
+                    Authentication
+                    Database
 ```
 
-### 3. Install Dependencies
+---
 
-```bash
-npm install
+## 📂 Project Structure
+
+```text
+EveryRupee/
+│
+├── assets/
+│   ├── images/
+│   ├── icons/
+│   └── videos/
+│
+├── frontend/
+│   ├── index.html
+│   ├── education.html
+│   ├── planner.html
+│   └── investment-assistant.html
+│
+├── backend/
+│   ├── server.js
+│   ├── routes/
+│   ├── controllers/
+│   └── services/
+│
+├── api/
+│
+├── styles/
+│
+├── scripts/
+│
+├── README.md
+│
+└── package.json
 ```
 
-### 4. Run the Server
-
-```bash
-node server.js
-```
-
-### 5. Access the Application
-
-Open your browser and navigate to:
-
-```
-http://localhost:3000
-```
+*(Adjust the structure to match the actual repository.)*
 
 ---
 
 ## 🛠️ Tech Stack
 
-* Node.js
+### Frontend
+
+* HTML5
+* CSS3
 * JavaScript
-* AI/ML APIs
-* Web Technologies (HTML, CSS, JS)
+
+### Backend
+
+* Node.js
+* FastAPI
+
+### Database & Authentication
+
+* Supabase
+
+### AI & Automation
+
+* AI APIs
+* OCR Services
+
+### Deployment
+
+* Vercel
 
 ---
 
-## 🤝 Contribution
+## ⚙️ Installation & Setup
 
-Contributions are welcome! Feel free to fork the repository and submit a pull request.
+### Prerequisites
+
+Install:
+
+* Node.js (v16+ recommended)
+* npm
+
+Download Node.js:
+
+https://nodejs.org
+
+---
+
+### Clone Repository
+
+```bash
+git clone https://github.com/<repository-owner>/EveryRupee.git
+
+cd EveryRupee
+```
+
+---
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+### Configure Environment Variables
+
+Create a `.env` file:
+
+```env
+SUPABASE_URL=your_supabase_url
+SUPABASE_KEY=your_supabase_key
+
+AI_API_KEY=your_ai_api_key
+
+OCR_API_KEY=your_ocr_api_key
+```
+
+---
+
+### Run Development Server
+
+```bash
+node server.js
+```
+
+or
+
+```bash
+npm start
+```
+
+---
+
+### Open Application
+
+```text
+http://localhost:3000
+```
+
+---
+
+## 🎥 Demo
+
+### Live Demo
+
+https://everyrupee-psi.vercel.app/education.html
+
+### Video Demonstration
+
+https://youtu.be/Y9z0WSJWY4s
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome.
+
+### Contribution Workflow
+
+1. Fork the repository
+2. Clone your fork
+
+```bash
+git clone <your-fork-url>
+```
+
+3. Create a feature branch
+
+```bash
+git checkout -b feature/your-feature
+```
+
+4. Commit changes
+
+```bash
+git commit -m "feat: add new feature"
+```
+
+5. Push branch
+
+```bash
+git push origin feature/your-feature
+```
+
+6. Open a Pull Request
+
+---
+
+## 📝 Coding Standards
+
+Please ensure:
+
+* Clean and readable code
+* Meaningful commit messages
+* Consistent formatting
+* Mobile responsiveness
+* No console errors
+
+---
+
+## 📌 Future Enhancements
+
+* AI portfolio recommendations
+* Advanced investment analytics
+* Expense prediction models
+* Credit score insights
+* Financial scam detection
+* Mobile application support
 
 ---
 
 ## 📜 License
 
 This project is licensed under the MIT License.
+
+See the LICENSE file for details.
+
+---
+
+## 👨‍💻 Maintainers
+
+Developed and maintained by the EveryRupee Team.
+
+For support, issues, or feature requests, please open a GitHub Issue.

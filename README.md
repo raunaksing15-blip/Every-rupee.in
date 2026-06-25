@@ -20,7 +20,7 @@
 
 Millions of individuals struggle with budgeting, savings, investment decisions, and identifying financial scams. Existing tools are often complex, generic, or not beginner-friendly. EveryRupee addresses this gap by delivering intelligent, personalized financial guidance through a clean, conversational interface.
 
-The platform acts as a **Financial Copilot**, enabling users to understand, manage, and grow their money with confidence. It simplifies complex financial concepts into clear, everyday language and adapts to each user’s income, goals .
+The platform acts as a **Financial Copilot**, enabling users to understand, manage, and grow their money with confidence. It simplifies complex financial concepts into clear, everyday language and adapts to each user's income and financial goals.
 
 <img width="1899" height="902" alt="image" src="https://github.com/user-attachments/assets/20c8d173-2f39-47d2-b0f7-20efac7d1097" />
 
